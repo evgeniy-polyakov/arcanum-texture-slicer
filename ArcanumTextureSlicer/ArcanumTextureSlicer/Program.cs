@@ -23,29 +23,26 @@ namespace ArcanumTextureSlicer
 
             try
             {
-                using (var inputImage = Image.FromFile(inputFile, true))
+                using (var inputBitmap = new Bitmap(inputFile))
                 {
-                    using (var inputBitmap = new Bitmap(inputImage))
+                    var n = Math.Ceiling((double) inputBitmap.Width/tileWidth);
+                    var m = Math.Ceiling((double) inputBitmap.Height/tileHeight);
+                    for (var i = 0; i < n; i++)
                     {
-                        for (int i = 0, n = inputBitmap.Width/tileWidth; i < n; i += 2)
+                        for (var j = 0; j < m; j++)
                         {
-                            for (int j = 0, m = inputBitmap.Height/tileHeight; j < m; j += 2)
+                            using (var outputBitmap = CloneRegion(inputBitmap,
+                                new Rectangle(i*tileWidth, j*tileHeight, tileWidth, tileHeight)))
                             {
-                                using (
-                                    var outputBitmap =
-                                        inputBitmap.Clone(
-                                            new Rectangle(i*tileWidth, j*tileHeight, tileWidth, tileHeight),
-                                            PixelFormat.Format8bppIndexed))
+                                try
                                 {
-                                    try
-                                    {
-                                        Console.WriteLine($"Save tile #{i},{j}.");
-                                        outputBitmap.Save($"{outputFolder.TrimEnd('/', '\\')}\\tile_{i}_{j}");
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        Console.WriteLine($"Error saving tile.");
-                                    }
+                                    Console.WriteLine($"Save tile #{i},{j}.");
+                                    outputBitmap.Save($"{outputFolder.TrimEnd('/', '\\')}\\tile_{i}_{j}.bmp",
+                                        ImageFormat.Bmp);
+                                }
+                                catch (Exception e)
+                                {
+                                    Console.WriteLine($"Error saving tile.");
                                 }
                             }
                         }
@@ -56,6 +53,29 @@ namespace ArcanumTextureSlicer
             {
                 Console.WriteLine($"Invalid input file.");
             }
+        }
+
+        private static Bitmap CloneRegion(Bitmap source, Rectangle rect)
+        {
+            if (rect.X >= 0 && rect.Y >= 0 && rect.Right <= source.Width && rect.Bottom <= source.Height)
+            {
+                return source.Clone(rect, source.PixelFormat);
+            }
+            var b = new Bitmap(rect.Width, rect.Height, source.PixelFormat);
+            // todo exception here
+            using (var g = Graphics.FromImage(b))
+            {
+                using (var p = new Pen(Color.Blue))
+                {
+                    g.DrawRectangle(p, 0, 0, b.Width, b.Height);
+                }
+                g.DrawImage(source,
+                    Math.Max(-rect.X, 0),
+                    Math.Max(-rect.Y, 0),
+                    Rectangle.Intersect(rect, new Rectangle(0, 0, source.Width, source.Height)),
+                    GraphicsUnit.Pixel);
+            }
+            return null;
         }
     }
 }
