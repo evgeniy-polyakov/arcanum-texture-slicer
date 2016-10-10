@@ -31,18 +31,18 @@ namespace ArcanumTextureSlicer
                     {
                         for (var j = 0; j < m; j++)
                         {
-                            using (var outputBitmap = CloneRegion(inputBitmap,
+                            using (var outputBitmap = inputBitmap.CloneRegion(
                                 new Rectangle(i*tileWidth, j*tileHeight, tileWidth, tileHeight)))
                             {
                                 try
                                 {
-                                    Console.WriteLine($"Save tile #{i},{j}.");
-                                    outputBitmap.Save($"{outputFolder.TrimEnd('/', '\\')}\\tile_{i}_{j}.bmp",
+                                    Console.WriteLine($"Save tile #{j},{i}.");
+                                    outputBitmap.Save($"{outputFolder.TrimEnd('/', '\\')}\\tile_{j}_{i}.bmp",
                                         ImageFormat.Bmp);
                                 }
                                 catch (Exception e)
                                 {
-                                    Console.WriteLine($"Error saving tile.");
+                                    Console.WriteLine(e);
                                 }
                             }
                         }
@@ -51,31 +51,8 @@ namespace ArcanumTextureSlicer
             }
             catch (FileNotFoundException e)
             {
-                Console.WriteLine($"Invalid input file.");
+                Console.WriteLine(e);
             }
-        }
-
-        private static Bitmap CloneRegion(Bitmap source, Rectangle rect)
-        {
-            if (rect.X >= 0 && rect.Y >= 0 && rect.Right <= source.Width && rect.Bottom <= source.Height)
-            {
-                return source.Clone(rect, source.PixelFormat);
-            }
-            var b = new Bitmap(rect.Width, rect.Height, source.PixelFormat);
-            // todo exception here
-            using (var g = Graphics.FromImage(b))
-            {
-                using (var p = new Pen(Color.Blue))
-                {
-                    g.DrawRectangle(p, 0, 0, b.Width, b.Height);
-                }
-                g.DrawImage(source,
-                    Math.Max(-rect.X, 0),
-                    Math.Max(-rect.Y, 0),
-                    Rectangle.Intersect(rect, new Rectangle(0, 0, source.Width, source.Height)),
-                    GraphicsUnit.Pixel);
-            }
-            return null;
         }
     }
 }
