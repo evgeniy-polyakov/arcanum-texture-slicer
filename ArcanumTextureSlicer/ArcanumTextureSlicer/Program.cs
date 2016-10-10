@@ -20,19 +20,23 @@ namespace ArcanumTextureSlicer
 
             const int tileWidth = 78;
             const int tileHeight = 40;
+            const int halfTileWidth = 39;
+            const int halfTileHeight = 20;
 
             try
             {
                 using (var inputBitmap = new Bitmap(inputFile))
                 {
                     var n = Math.Ceiling((double) inputBitmap.Width/tileWidth);
-                    var m = Math.Ceiling((double) inputBitmap.Height/tileHeight);
+                    var m = Math.Ceiling((double) inputBitmap.Height/tileHeight)*2;
                     for (var i = 0; i < n; i++)
                     {
                         for (var j = 0; j < m; j++)
                         {
-                            using (var outputBitmap = inputBitmap.CloneRegion(
-                                new Rectangle(i*tileWidth, j*tileHeight, tileWidth, tileHeight)))
+                            using (var outputBitmap = inputBitmap.CloneRegion(new Rectangle(
+                                i*tileWidth - halfTileWidth*(1 - j%2),
+                                j*tileHeight/2,
+                                tileWidth, tileHeight)))
                             {
                                 try
                                 {

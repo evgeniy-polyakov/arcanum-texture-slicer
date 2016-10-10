@@ -24,8 +24,53 @@ namespace ArcanumTextureSlicer
 
         public static void SetColor(this Bitmap canvas, Color color)
         {
+            var data = canvas.LockBits(new Rectangle(0, 0, canvas.Width, canvas.Height),
+                ImageLockMode.WriteOnly, canvas.PixelFormat);
+            var bytes = new byte[data.Height*data.Stride];
+            var colorIndex = canvas.GetColorIndex(color);
+
+            for (var i = 0; i < bytes.Length; i++)
+            {
+                bytes[i] = colorIndex;
+            }
+
+            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length);
+            canvas.UnlockBits(data);
+        }
+
+        public static void DrawImage(this Bitmap canvas, Bitmap source, int canvasX, int canvasY, Rectangle sourceRect)
+        {
+            var sourceData = source.LockBits(sourceRect, ImageLockMode.ReadOnly, source.PixelFormat);
+            var canvasData = canvas.LockBits(new Rectangle(canvasX, canvasY, sourceRect.Width, sourceRect.Height),
+                ImageLockMode.WriteOnly, canvas.PixelFormat);
+            try
+            {
+                var sourceBytes = new byte[sourceData.Height*sourceData.Stride];
+                var canvasBytes = new byte[canvasData.Height*canvasData.Stride];
+                Marshal.Copy(sourceData.Scan0, sourceBytes, 0, sourceBytes.Length);
+                Marshal.Copy(canvasData.Scan0, canvasBytes, 0, canvasBytes.Length);
+
+                for (var y = 0; y < canvasData.Height; y++)
+                {
+                    for (var x = 0; x < canvasData.Width; x++)
+                    {
+                        canvasBytes[x + y*canvasData.Stride] = sourceBytes[x + y*sourceData.Stride];
+                    }
+                }
+
+                Marshal.Copy(canvasBytes, 0, canvasData.Scan0, canvasBytes.Length);
+            }
+            finally
+            {
+                source.UnlockBits(sourceData);
+                canvas.UnlockBits(canvasData);
+            }
+        }
+
+        public static byte GetColorIndex(this Bitmap bitmap, Color color)
+        {
             byte? colorIndex = null;
-            var colors = canvas.Palette.Entries;
+            var colors = bitmap.Palette.Entries;
             for (var i = 0; i < colors.Length; i++)
             {
                 if (colors[i].ToArgb() == color.ToArgb())
@@ -38,41 +83,7 @@ namespace ArcanumTextureSlicer
             {
                 throw new ArgumentException($"No color {color} in palette.");
             }
-
-            var data = canvas.LockBits(new Rectangle(0, 0, canvas.Width, canvas.Height),
-                ImageLockMode.WriteOnly, canvas.PixelFormat);
-            var bytes = new byte[data.Height*data.Stride];
-            for (var i = 0; i < bytes.Length; i++)
-            {
-                bytes[i] = colorIndex.Value;
-            }
-
-            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length);
-            canvas.UnlockBits(data);
-        }
-
-        public static void DrawImage(this Bitmap canvas, Bitmap source, int canvasX, int canvasY, Rectangle sourceRect)
-        {
-            var canvasData = canvas.LockBits(new Rectangle(canvasX, canvasY, sourceRect.Width, sourceRect.Height),
-                ImageLockMode.WriteOnly, canvas.PixelFormat);
-            var sourceData = source.LockBits(sourceRect, ImageLockMode.ReadOnly, canvas.PixelFormat);
-
-            var canvasBytes = new byte[canvasData.Height*canvasData.Stride];
-            var sourceBytes = new byte[sourceData.Height*sourceData.Stride];
-
-            Marshal.Copy(sourceData.Scan0, sourceBytes, 0, sourceBytes.Length);
-
-            for (var i = 0; i < canvasData.Width; i++)
-            {
-                for (var j = 0; j < canvasData.Height; j++)
-                {
-                    canvasBytes[i + j*canvasData.Stride] = sourceBytes[i + j*sourceData.Stride];
-                }
-            }
-
-            Marshal.Copy(canvasBytes, 0, canvasData.Scan0, canvasBytes.Length);
-            canvas.UnlockBits(canvasData);
-            source.UnlockBits(sourceData);
+            return colorIndex.Value;
         }
     }
 }
