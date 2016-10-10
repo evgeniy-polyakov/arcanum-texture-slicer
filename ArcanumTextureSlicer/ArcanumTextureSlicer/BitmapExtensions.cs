@@ -10,8 +10,6 @@ namespace ArcanumTextureSlicer
     {
         private static Bitmap _sampleTile;
 
-        public static readonly Color AlphaColor = Color.Blue;
-
         public static Bitmap SampleTile =>
             _sampleTile ??
             (_sampleTile = new Bitmap(Assembly.GetExecutingAssembly()
@@ -31,7 +29,7 @@ namespace ArcanumTextureSlicer
                 return source.Clone(rect, source.PixelFormat);
             }
             var bitmap = source.Clone(new Rectangle(0, 0, rect.Width, rect.Height), source.PixelFormat);
-            bitmap.SetColor(AlphaColor);
+            bitmap.SetColor(0);
             bitmap.DrawImage(source,
                 Math.Max(-rect.X, 0),
                 Math.Max(-rect.Y, 0),
@@ -41,10 +39,14 @@ namespace ArcanumTextureSlicer
 
         public static void SetColor(this Bitmap canvas, Color color)
         {
+            SetColor(canvas, canvas.GetColorIndex(color));
+        }
+
+        public static void SetColor(this Bitmap canvas, byte colorIndex)
+        {
             var data = canvas.LockBits(new Rectangle(0, 0, canvas.Width, canvas.Height),
                 ImageLockMode.WriteOnly, canvas.PixelFormat);
             var bytes = new byte[data.Height*data.Stride];
-            var colorIndex = canvas.GetColorIndex(color);
 
             for (var i = 0; i < bytes.Length; i++)
             {
@@ -63,8 +65,7 @@ namespace ArcanumTextureSlicer
             var canvasData = canvas.LockBits(rect, ImageLockMode.WriteOnly, canvas.PixelFormat);
             try
             {
-                var sampleAlphaIndex = sample.GetColorIndex(AlphaColor);
-                var canvasAlphaIndex = canvas.GetColorIndex(AlphaColor);
+                var sampleAlphaIndex = sample.GetColorIndex(Color.Blue);
 
                 var sampleBytes = new byte[sampleData.Height*sampleData.Stride];
                 var canvasBytes = new byte[canvasData.Height*canvasData.Stride];
@@ -77,7 +78,7 @@ namespace ArcanumTextureSlicer
                     {
                         if (sampleBytes[x + y*sampleData.Stride] == sampleAlphaIndex)
                         {
-                            canvasBytes[x + y*canvasData.Stride] = canvasAlphaIndex;
+                            canvasBytes[x + y*canvasData.Stride] = 0;
                         }
                     }
                 }
