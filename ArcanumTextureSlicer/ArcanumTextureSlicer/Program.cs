@@ -39,9 +39,10 @@ namespace ArcanumTextureSlicer
                             {
                                 try
                                 {
-                                    Console.WriteLine($"Save tile #{j},{i}.");
-                                    outputBitmap.Save($"{outputFolder.TrimEnd('/', '\\')}\\tile_{j}_{i}.bmp",
-                                        ImageFormat.Bmp);
+                                    var tilePath =
+                                        $"{outputFolder.TrimEnd('/', '\\')}\\tile_{LeadingZero(j)}_{LeadingZero(i)}.bmp";
+                                    Console.WriteLine(tilePath);
+                                    outputBitmap.Save(tilePath, ImageFormat.Bmp);
                                 }
                                 catch (Exception e)
                                 {
@@ -56,6 +57,15 @@ namespace ArcanumTextureSlicer
             {
                 Console.WriteLine(e);
             }
+        }
+
+        private static string LeadingZero(int i)
+        {
+            return i < 100
+                ? i < 10
+                    ? $"00{i}"
+                    : $"0{i}"
+                : $"{i}";
         }
     }
 }
