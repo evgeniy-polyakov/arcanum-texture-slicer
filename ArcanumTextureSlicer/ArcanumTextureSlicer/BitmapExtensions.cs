@@ -1,12 +1,29 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace ArcanumTextureSlicer
 {
     public static class BitmapExtensions
     {
+        private static Bitmap _sampleTile;
+
+        public static readonly Color AlphaColor = Color.Blue;
+
+        public static Bitmap SampleTile =>
+            _sampleTile ??
+            (_sampleTile = new Bitmap(Assembly.GetExecutingAssembly()
+                .GetManifestResourceStream("ArcanumTextureSlicer.Resources.SampleTile.png")));
+
+        public static Bitmap CreateTile(this Bitmap source, int x, int y)
+        {
+            var tile = CloneRegion(source, new Rectangle(x, y, SampleTile.Width, SampleTile.Height));
+            tile.DrawAlpha(SampleTile);
+            return tile;
+        }
+
         public static Bitmap CloneRegion(this Bitmap source, Rectangle rect)
         {
             if (rect.X >= 0 && rect.Y >= 0 && rect.Right <= source.Width && rect.Bottom <= source.Height)
@@ -14,7 +31,7 @@ namespace ArcanumTextureSlicer
                 return source.Clone(rect, source.PixelFormat);
             }
             var bitmap = source.Clone(new Rectangle(0, 0, rect.Width, rect.Height), source.PixelFormat);
-            bitmap.SetColor(Color.Blue);
+            bitmap.SetColor(AlphaColor);
             bitmap.DrawImage(source,
                 Math.Max(-rect.X, 0),
                 Math.Max(-rect.Y, 0),
@@ -36,6 +53,42 @@ namespace ArcanumTextureSlicer
 
             Marshal.Copy(bytes, 0, data.Scan0, bytes.Length);
             canvas.UnlockBits(data);
+        }
+
+        public static void DrawAlpha(this Bitmap canvas, Bitmap sample)
+        {
+            var rect = new Rectangle(0, 0, canvas.Width, canvas.Height);
+
+            var sampleData = sample.LockBits(rect, ImageLockMode.ReadOnly, sample.PixelFormat);
+            var canvasData = canvas.LockBits(rect, ImageLockMode.WriteOnly, canvas.PixelFormat);
+            try
+            {
+                var sampleAlphaIndex = sample.GetColorIndex(AlphaColor);
+                var canvasAlphaIndex = canvas.GetColorIndex(AlphaColor);
+
+                var sampleBytes = new byte[sampleData.Height*sampleData.Stride];
+                var canvasBytes = new byte[canvasData.Height*canvasData.Stride];
+                Marshal.Copy(sampleData.Scan0, sampleBytes, 0, sampleBytes.Length);
+                Marshal.Copy(canvasData.Scan0, canvasBytes, 0, canvasBytes.Length);
+
+                for (var y = 0; y < canvasData.Height; y++)
+                {
+                    for (var x = 0; x < canvasData.Width; x++)
+                    {
+                        if (sampleBytes[x + y*sampleData.Stride] == sampleAlphaIndex)
+                        {
+                            canvasBytes[x + y*canvasData.Stride] = canvasAlphaIndex;
+                        }
+                    }
+                }
+
+                Marshal.Copy(canvasBytes, 0, canvasData.Scan0, canvasBytes.Length);
+            }
+            finally
+            {
+                sample.UnlockBits(sampleData);
+                canvas.UnlockBits(canvasData);
+            }
         }
 
         public static void DrawImage(this Bitmap canvas, Bitmap source, int canvasX, int canvasY, Rectangle sourceRect)
