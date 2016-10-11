@@ -7,8 +7,8 @@
     <ProjectGuid>{8D83F596-37CF-4683-BA03-51596B348A40}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ArcanumTextureSlicer</RootNamespace>
-    <AssemblyName>ArcanumTextureSlicer</AssemblyName>
+    <RootNamespace>ArcanumTextureSlicer.Console</RootNamespace>
+    <AssemblyName>ArcanumTextureSlicer.Console</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
