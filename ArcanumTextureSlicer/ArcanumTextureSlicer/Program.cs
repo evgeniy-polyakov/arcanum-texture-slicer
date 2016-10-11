@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 
 namespace ArcanumTextureSlicer
 {
@@ -25,7 +26,11 @@ namespace ArcanumTextureSlicer
             const int xSpace = BitmapExtensions.TileXSpace;
             const int halfXSpace = BitmapExtensions.HalfTileXSpace;
 
-            if (!Directory.Exists(outputFolder))
+            if (Directory.Exists(outputFolder))
+            {
+                Directory.GetFiles(outputFolder, "tile_???_???.bmp").ToList().ForEach(File.Delete);
+            }
+            else
             {
                 Directory.CreateDirectory(outputFolder);
             }
