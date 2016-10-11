@@ -49,7 +49,7 @@ namespace ArcanumTextureSlicer
                     {
                         for (var j = 0; j < m; j++)
                         {
-                            if (i == 0 && j == 0 && !initTileCenter.IsEmpty)
+                            if (i == 0 && j == 0 && initTileCenter.X == initTileX && initTileCenter.Y == initTileY)
                             {
                                 // Do not export start tile
                                 continue;
