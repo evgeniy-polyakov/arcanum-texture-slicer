@@ -17,15 +17,13 @@ namespace ArcanumTextureSlicer
 
             var inputFile = args[0];
             var outputFolder = args[1];
-            var initTileX = args.Length > 2 ? int.Parse(args[2]) : 0;
-            var initTileY = args.Length > 3 ? int.Parse(args[3]) : 0;
 
-            var tileWidth = BitmapExtensions.SampleTile.Width;
-            var tileHeight = BitmapExtensions.SampleTile.Height;
-            var halfTileWidth = tileWidth/2;
-            var halfTileHeight = tileHeight/2;
-            const int xSpace = 2;
-            const int halfXSpace = 1;
+            const int tileWidth = BitmapExtensions.TileWidth;
+            const int tileHeight = BitmapExtensions.TileHeight;
+            const int halfTileWidth = BitmapExtensions.HalfTileWidth;
+            const int halfTileHeight = BitmapExtensions.HalfTileHeight;
+            const int xSpace = BitmapExtensions.TileXSpace;
+            const int halfXSpace = BitmapExtensions.HalfTileXSpace;
 
             if (!Directory.Exists(outputFolder))
             {
@@ -36,12 +34,21 @@ namespace ArcanumTextureSlicer
             {
                 using (var inputBitmap = new Bitmap(inputFile))
                 {
+                    var initTileCenter = inputBitmap.GetStartTileCenter();
+                    var initTileX = args.Length > 2 ? int.Parse(args[2]) : initTileCenter.X;
+                    var initTileY = args.Length > 3 ? int.Parse(args[3]) : initTileCenter.Y;
+
                     var n = Math.Ceiling((double) (inputBitmap.Width - initTileX)/(tileWidth + xSpace));
                     var m = Math.Ceiling((double) (inputBitmap.Height - initTileY)/tileHeight)*2;
                     for (var i = 0; i < n; i++)
                     {
                         for (var j = 0; j < m; j++)
                         {
+                            if (i == 0 && j == 0 && !initTileCenter.IsEmpty)
+                            {
+                                // Do not export start tile
+                                continue;
+                            }
                             var evenRow = j%2;
                             var oddRow = 1 - evenRow;
                             using (var outputBitmap = inputBitmap.CreateTile(

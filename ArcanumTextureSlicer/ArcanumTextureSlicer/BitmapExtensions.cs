@@ -8,12 +8,92 @@ namespace ArcanumTextureSlicer
 {
     public static class BitmapExtensions
     {
+        public const int TileWidth = 78;
+        public const int HalfTileWidth = 39;
+        public const int TileHeight = 40;
+        public const int HalfTileHeight = 20;
+        public const int TileXSpace = 2;
+        public const int HalfTileXSpace = 1;
         private static Bitmap _sampleTile;
 
         public static Bitmap SampleTile =>
             _sampleTile ??
             (_sampleTile = new Bitmap(Assembly.GetExecutingAssembly()
                 .GetManifestResourceStream("ArcanumTextureSlicer.Resources.SampleTile.png")));
+
+        public static Point GetStartTileCenter(this Bitmap source)
+        {
+            var point = new Point();
+            byte colorIndex;
+            try
+            {
+                colorIndex = source.GetColorIndex(Color.Black);
+            }
+            catch (ArgumentException e)
+            {
+                Console.WriteLine($"Start tile color {Color.Black} is not found in palette.");
+                return point;
+            }
+            var tileRows = GetTileRows();
+            var sourceData = source.LockBits(new Rectangle(0, 0, source.Width, source.Height),
+                ImageLockMode.ReadOnly, source.PixelFormat);
+            try
+            {
+                var sourceBytes = new byte[sourceData.Height*sourceData.Stride];
+                Marshal.Copy(sourceData.Scan0, sourceBytes, 0, sourceBytes.Length);
+
+                for (var y = 0; y < sourceData.Height - HalfTileHeight + 1; y++)
+                {
+                    for (var x = HalfTileWidth - 1; x < sourceData.Width - HalfTileWidth; x++)
+                    {
+                        var index = y*sourceData.Stride + x;
+                        if (sourceBytes[index] == colorIndex)
+                        {
+                            for (var r = 0; r < tileRows.Length; r++)
+                            {
+                                for (var p = 0; p < tileRows[r]; p++)
+                                {
+                                    var i = index + p + r*sourceData.Stride - (tileRows[r] - 2)/2;
+                                    if (sourceBytes[i] != colorIndex)
+                                    {
+                                        goto Continue;
+                                    }
+                                }
+                            }
+                            point.X = x + 1;
+                            point.Y = y + HalfTileHeight;
+                            goto Finish;
+                        }
+                        Continue:
+                        ;
+                    }
+                }
+                Finish:
+                ;
+            }
+            finally
+            {
+                source.UnlockBits(sourceData);
+            }
+            Console.WriteLine($"Start tile is not found.");
+            return point;
+        }
+
+        private static int[] GetTileRows()
+        {
+            var rows = new int[40];
+            for (var i = 0; i < 20; i++)
+            {
+                rows[i] = 2 + i*4;
+            }
+            for (var i = 19; i >= 0; i--)
+            {
+                rows[39 - i] = 2 + i*4;
+            }
+            return rows;
+        }
+
+        //private static bool 
 
         public static Bitmap CreateTile(this Bitmap source, int x, int y)
         {
