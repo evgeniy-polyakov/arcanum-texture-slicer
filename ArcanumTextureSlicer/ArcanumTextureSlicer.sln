@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArcanumTextureSlicer.Consol
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArcanumTextureSlicer.Core", "ArcanumTextureSlicer.Core\ArcanumTextureSlicer.Core.csproj", "{ECC9C8A1-77C5-4F4E-9E16-6D9F8D2FD8CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArcanumTextureSlicer.Gui", "ArcanumTextureSlicer.Gui\ArcanumTextureSlicer.Gui.csproj", "{8E3A252A-2CE3-4D04-9943-3016081A2C97}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{ECC9C8A1-77C5-4F4E-9E16-6D9F8D2FD8CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECC9C8A1-77C5-4F4E-9E16-6D9F8D2FD8CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECC9C8A1-77C5-4F4E-9E16-6D9F8D2FD8CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E3A252A-2CE3-4D04-9943-3016081A2C97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E3A252A-2CE3-4D04-9943-3016081A2C97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E3A252A-2CE3-4D04-9943-3016081A2C97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E3A252A-2CE3-4D04-9943-3016081A2C97}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
