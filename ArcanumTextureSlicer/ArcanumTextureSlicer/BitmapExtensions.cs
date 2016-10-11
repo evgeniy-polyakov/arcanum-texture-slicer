@@ -46,15 +46,20 @@ namespace ArcanumTextureSlicer
         {
             var data = canvas.LockBits(new Rectangle(0, 0, canvas.Width, canvas.Height),
                 ImageLockMode.WriteOnly, canvas.PixelFormat);
-            var bytes = new byte[data.Height*data.Stride];
-
-            for (var i = 0; i < bytes.Length; i++)
+            try
             {
-                bytes[i] = colorIndex;
-            }
+                var bytes = new byte[data.Height*data.Stride];
 
-            Marshal.Copy(bytes, 0, data.Scan0, bytes.Length);
-            canvas.UnlockBits(data);
+                for (var i = 0; i < bytes.Length; i++)
+                {
+                    bytes[i] = colorIndex;
+                }
+                Marshal.Copy(bytes, 0, data.Scan0, bytes.Length);
+            }
+            finally
+            {
+                canvas.UnlockBits(data);
+            }
         }
 
         public static void DrawAlpha(this Bitmap canvas, Bitmap sample)
@@ -138,6 +143,33 @@ namespace ArcanumTextureSlicer
                 throw new ArgumentException($"No color {color} in palette.");
             }
             return colorIndex.Value;
+        }
+
+        public static bool IsTransparent(this Bitmap canvas)
+        {
+            var canvasData = canvas.LockBits(new Rectangle(0, 0, canvas.Width, canvas.Height),
+                ImageLockMode.ReadOnly, canvas.PixelFormat);
+            try
+            {
+                var canvasBytes = new byte[canvasData.Height*canvasData.Stride];
+                Marshal.Copy(canvasData.Scan0, canvasBytes, 0, canvasBytes.Length);
+
+                for (var y = 0; y < canvasData.Height; y++)
+                {
+                    for (var x = 0; x < canvasData.Width; x++)
+                    {
+                        if (canvasBytes[x + y*canvasData.Stride] != canvasBytes[0])
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                canvas.UnlockBits(canvasData);
+            }
+            return true;
         }
     }
 }

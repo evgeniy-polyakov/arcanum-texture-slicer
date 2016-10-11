@@ -37,6 +37,12 @@ namespace ArcanumTextureSlicer
                                 i*tileWidth - halfTileWidth*(1 - j%2),
                                 j*halfTileHeight - halfTileHeight))
                             {
+//                                if (outputBitmap.IsTransparent())
+//                                {
+//                                    Console.WriteLine($"Transparent tile at {j},{i}");
+//                                }
+//                                else
+//                                {
                                 try
                                 {
                                     var tilePath =
@@ -48,6 +54,7 @@ namespace ArcanumTextureSlicer
                                 {
                                     Console.WriteLine(e);
                                 }
+//                                }
                             }
                         }
                     }
