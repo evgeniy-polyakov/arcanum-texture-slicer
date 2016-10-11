@@ -25,6 +25,11 @@ namespace ArcanumTextureSlicer
             var halfTileWidth = tileWidth/2;
             var halfTileHeight = tileHeight/2;
 
+            if (!Directory.Exists(outputFolder))
+            {
+                Directory.CreateDirectory(outputFolder);
+            }
+
             try
             {
                 using (var inputBitmap = new Bitmap(inputFile))
