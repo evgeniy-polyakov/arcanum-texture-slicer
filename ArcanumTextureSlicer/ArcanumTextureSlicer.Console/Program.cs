@@ -3,8 +3,9 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using ArcanumTextureSlicer.Core;
 
-namespace ArcanumTextureSlicer
+namespace ArcanumTextureSlicer.Console
 {
     public class Program
     {
@@ -12,7 +13,7 @@ namespace ArcanumTextureSlicer
         {
             if (args == null || args.Length < 2)
             {
-                Console.WriteLine($"Not enough arguments.");
+                System.Console.WriteLine($"Not enough arguments.");
                 return;
             }
 
@@ -62,7 +63,7 @@ namespace ArcanumTextureSlicer
                             {
                                 if (outputBitmap.IsTransparent())
                                 {
-                                    Console.WriteLine($"Transparent tile at {j},{i}");
+                                    System.Console.WriteLine($"Transparent tile at {j},{i}");
                                 }
                                 else
                                 {
@@ -70,12 +71,12 @@ namespace ArcanumTextureSlicer
                                     {
                                         var tilePath =
                                             $"{outputFolder.TrimEnd('/', '\\')}\\tile_{LeadingZero(j)}_{LeadingZero(i)}.bmp";
-                                        Console.WriteLine(tilePath);
+                                        System.Console.WriteLine(tilePath);
                                         outputBitmap.Save(tilePath, ImageFormat.Bmp);
                                     }
                                     catch (Exception e)
                                     {
-                                        Console.WriteLine(e);
+                                        System.Console.WriteLine(e);
                                     }
                                 }
                             }
@@ -85,7 +86,7 @@ namespace ArcanumTextureSlicer
             }
             catch (FileNotFoundException e)
             {
-                Console.WriteLine(e);
+                System.Console.WriteLine(e);
             }
         }
 

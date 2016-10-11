@@ -4,7 +4,7 @@ using System.Drawing.Imaging;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
-namespace ArcanumTextureSlicer
+namespace ArcanumTextureSlicer.Core
 {
     public static class BitmapExtensions
     {
@@ -19,7 +19,7 @@ namespace ArcanumTextureSlicer
         public static Bitmap SampleTile =>
             _sampleTile ??
             (_sampleTile = new Bitmap(Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream("ArcanumTextureSlicer.Resources.SampleTile.png")));
+                .GetManifestResourceStream("ArcanumTextureSlicer.Core.Resources.SampleTile.png")));
 
         public static Point GetStartTileCenter(this Bitmap source)
         {
