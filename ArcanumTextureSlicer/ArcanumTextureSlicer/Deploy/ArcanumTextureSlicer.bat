@@ -1,1 +1,0 @@
-ArcanumTextureSlicer.exe bmp-file output-folder
