@@ -24,7 +24,8 @@ namespace ArcanumTextureSlicer
             var tileHeight = BitmapExtensions.SampleTile.Height;
             var halfTileWidth = tileWidth/2;
             var halfTileHeight = tileHeight/2;
-            var xSpace = 2;
+            const int xSpace = 2;
+            const int halfXSpace = 1;
 
             if (!Directory.Exists(outputFolder))
             {
@@ -41,8 +42,10 @@ namespace ArcanumTextureSlicer
                     {
                         for (var j = 0; j < m; j++)
                         {
+                            var evenRow = j%2;
+                            var oddRow = 1 - evenRow;
                             using (var outputBitmap = inputBitmap.CreateTile(
-                                initTileX + i*tileWidth - halfTileWidth*(1 - j%2) + i*xSpace,
+                                initTileX + i*tileWidth - halfTileWidth*oddRow + i*xSpace + halfXSpace*evenRow,
                                 initTileY + j*halfTileHeight - halfTileHeight))
                             {
                                 if (outputBitmap.IsTransparent())
