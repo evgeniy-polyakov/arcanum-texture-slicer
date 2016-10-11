@@ -37,24 +37,24 @@ namespace ArcanumTextureSlicer
                                 i*tileWidth - halfTileWidth*(1 - j%2),
                                 j*halfTileHeight - halfTileHeight))
                             {
-//                                if (outputBitmap.IsTransparent())
-//                                {
-//                                    Console.WriteLine($"Transparent tile at {j},{i}");
-//                                }
-//                                else
-//                                {
-                                try
+                                if (outputBitmap.IsTransparent())
                                 {
-                                    var tilePath =
-                                        $"{outputFolder.TrimEnd('/', '\\')}\\tile_{LeadingZero(j)}_{LeadingZero(i)}.bmp";
-                                    Console.WriteLine(tilePath);
-                                    outputBitmap.Save(tilePath, ImageFormat.Bmp);
+                                    Console.WriteLine($"Transparent tile at {j},{i}");
                                 }
-                                catch (Exception e)
+                                else
                                 {
-                                    Console.WriteLine(e);
+                                    try
+                                    {
+                                        var tilePath =
+                                            $"{outputFolder.TrimEnd('/', '\\')}\\tile_{LeadingZero(j)}_{LeadingZero(i)}.bmp";
+                                        Console.WriteLine(tilePath);
+                                        outputBitmap.Save(tilePath, ImageFormat.Bmp);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        Console.WriteLine(e);
+                                    }
                                 }
-//                                }
                             }
                         }
                     }
