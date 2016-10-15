@@ -5,22 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArcanumTextureSlicer.Gui"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Arcanum Texture Slicer" Height="600" Width="800">
 
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open" Executed="Open_Executed" CanExecute="Open_CanExecute" />
+    </Window.CommandBindings>
 
     <StackPanel>
         <Menu>
             <MenuItem Header="File">
-                <MenuItem Header="New">
-                    <MenuItem Header="File1"/>
-                    <MenuItem Header="File2"/>
-                    <MenuItem Header="File3"/>
-                </MenuItem>
-                <MenuItem Header="Open"/>
-                <MenuItem Header="Save"/>
+                <MenuItem Header="Open..." Command="ApplicationCommands.Open" />
+                <MenuItem Header="Export..." />
             </MenuItem>
         </Menu>
     </StackPanel>
-
 
 </Window>
