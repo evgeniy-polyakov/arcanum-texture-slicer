@@ -40,25 +40,9 @@ namespace ArcanumTextureSlicer.Gui
                 var bitmap = CreateBitmap(openFileDialog.FileName);
                 if (bitmap != null)
                 {
-                    if (_bitmap != null)
-                    {
-                        BitmapViewer.Source = null;
-                        _bitmap.Dispose();
-                    }
+                    DestroyBitmap();
                     _bitmap = bitmap;
-
-                    var data = _bitmap.LockBits(new Rectangle(0, 0, _bitmap.Width, _bitmap.Height),
-                        ImageLockMode.ReadOnly, _bitmap.PixelFormat);
-                    var bytes = new byte[data.Height*data.Stride];
-                    var stride = data.Stride;
-                    Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
-                    _bitmap.UnlockBits(data);
-
-                    BitmapViewer.Source = BitmapSource.Create(
-                        _bitmap.Width, _bitmap.Height, 96, 96, PixelFormats.Indexed8,
-                        new BitmapPalette(
-                            _bitmap.Palette.Entries.Select(c => Color.FromArgb(c.A, c.R, c.G, c.B)).ToList()),
-                        bytes, stride);
+                    DisplayBitmap();
                 }
             }
         }
@@ -85,6 +69,31 @@ namespace ArcanumTextureSlicer.Gui
                 MessageBox.Show(this, e.Message, "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             return null;
+        }
+
+        private void DestroyBitmap()
+        {
+            if (_bitmap != null)
+            {
+                BitmapViewer.Source = null;
+                _bitmap.Dispose();
+            }
+        }
+
+        private void DisplayBitmap()
+        {
+            var data = _bitmap.LockBits(new Rectangle(0, 0, _bitmap.Width, _bitmap.Height),
+                ImageLockMode.ReadOnly, _bitmap.PixelFormat);
+            var bytes = new byte[data.Height*data.Stride];
+            var stride = data.Stride;
+            Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
+            _bitmap.UnlockBits(data);
+
+            BitmapViewer.Source = BitmapSource.Create(
+                _bitmap.Width, _bitmap.Height, 96, 96, PixelFormats.Indexed8,
+                new BitmapPalette(
+                    _bitmap.Palette.Entries.Select(c => Color.FromArgb(c.A, c.R, c.G, c.B)).ToList()),
+                bytes, stride);
         }
 
         private void Open_CanExecute(object sender, CanExecuteRoutedEventArgs e)
