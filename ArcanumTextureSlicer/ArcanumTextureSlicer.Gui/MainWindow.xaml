@@ -11,13 +11,17 @@
         <CommandBinding Command="ApplicationCommands.Open" Executed="Open_Executed" CanExecute="Open_CanExecute" />
     </Window.CommandBindings>
 
-    <StackPanel>
-        <Menu>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header="Open..." Command="ApplicationCommands.Open" />
                 <MenuItem Header="Export..." />
             </MenuItem>
         </Menu>
-    </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto">
+            <Image Name="BitmapViewer" />
+        </ScrollViewer>
+    </DockPanel>
 
 </Window>
