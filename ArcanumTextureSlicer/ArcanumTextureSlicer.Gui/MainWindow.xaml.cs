@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ArcanumTextureSlicer.Core;
 using Microsoft.Win32;
 using Color = System.Windows.Media.Color;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
@@ -25,6 +26,12 @@ namespace ArcanumTextureSlicer.Gui
             InitializeComponent();
 
             RenderOptions.SetBitmapScalingMode(BitmapViewer, BitmapScalingMode.NearestNeighbor);
+            RenderOptions.SetBitmapScalingMode(GridViewer, BitmapScalingMode.Fant);
+        }
+
+        private void Open_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = true;
         }
 
         private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -62,10 +69,7 @@ namespace ArcanumTextureSlicer.Gui
             }
             catch (Exception e)
             {
-                if (bitmap != null)
-                {
-                    bitmap.Dispose();
-                }
+                bitmap?.Dispose();
                 ShowError(e);
             }
             return null;
@@ -106,7 +110,7 @@ namespace ArcanumTextureSlicer.Gui
                 var bytes = new byte[data.Height*data.Stride];
                 var stride = data.Stride;
                 Marshal.Copy(data.Scan0, bytes, 0, bytes.Length);
-                
+
                 BitmapViewer.Source = BitmapSource.Create(
                     _bitmap.Width, _bitmap.Height, 96, 96, PixelFormats.Indexed8,
                     new BitmapPalette(_bitmap.Palette
@@ -114,6 +118,8 @@ namespace ArcanumTextureSlicer.Gui
                         .Select(c => Color.FromArgb(c.A, c.R, c.G, c.B))
                         .ToList()),
                     bytes, stride);
+
+                DisplayGrid();
             }
             catch (Exception e)
             {
@@ -125,9 +131,27 @@ namespace ArcanumTextureSlicer.Gui
             }
         }
 
-        private void Open_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        private void DisplayGrid()
         {
-            e.CanExecute = true;
+            var stride = ((_bitmap.Width*32 + 31) & ~31)/8;
+            var pixels = new uint[_bitmap.Width*_bitmap.Height];
+
+            _bitmap.IterateTiles(0, 0, position =>
+            {
+                foreach (var point in Tile.Outline)
+                {
+                    var x = position.X + point.X;
+                    var y = position.Y + point.Y;
+                    if (x >= 0 && x < _bitmap.Width && y >= 0 && y < _bitmap.Height)
+                    {
+                        pixels[y*_bitmap.Width + x] = 0xcc00ff00;
+                    }
+                }
+            });
+
+            GridViewer.Source = BitmapSource.Create(
+                _bitmap.Width, _bitmap.Height, 96, 96,
+                PixelFormats.Bgra32, null, pixels, stride);
         }
 
         private void ShowError(Exception e)
