@@ -20,13 +20,6 @@ namespace ArcanumTextureSlicer.Console
             var inputFile = args[0];
             var outputFolder = args[1];
 
-            const int tileWidth = BitmapExtensions.TileWidth;
-            const int tileHeight = BitmapExtensions.TileHeight;
-            const int halfTileWidth = BitmapExtensions.HalfTileWidth;
-            const int halfTileHeight = BitmapExtensions.HalfTileHeight;
-            const int xSpace = BitmapExtensions.TileXSpace;
-            const int halfXSpace = BitmapExtensions.HalfTileXSpace;
-
             if (Directory.Exists(outputFolder))
             {
                 Directory.GetFiles(outputFolder, "tile_???_???.bmp").ToList().ForEach(File.Delete);

@@ -7,32 +7,6 @@ namespace ArcanumTextureSlicer.Core
 {
     public static class BitmapExtensions
     {
-        public const int TileWidth = 78;
-        public const int HalfTileWidth = 39;
-        public const int TileHeight = 40;
-        public const int HalfTileHeight = 20;
-        public const int TileXSpace = 2;
-        public const int HalfTileXSpace = 1;
-
-        private static int[] _tileRows;
-
-        private static int[] TileRows => _tileRows ?? (_tileRows = GetTileRows());
-
-        private static int[] GetTileRows()
-        {
-            var rows = new int[40];
-            for (var i = 0; i < 20; i++)
-            {
-                rows[i] = 2 + i*4;
-            }
-            for (var i = 19; i >= 0; i--)
-            {
-                rows[39 - i] = 2 + i*4;
-            }
-            return rows;
-        }
-
-
         public static Point GetStartTileCenter(this Bitmap source)
         {
             var point = new Point();
@@ -53,18 +27,18 @@ namespace ArcanumTextureSlicer.Core
                 var sourceBytes = new byte[sourceData.Height*sourceData.Stride];
                 Marshal.Copy(sourceData.Scan0, sourceBytes, 0, sourceBytes.Length);
 
-                for (var y = 0; y < sourceData.Height - HalfTileHeight + 1; y++)
+                for (var y = 0; y < sourceData.Height - Tile.HalfHeight + 1; y++)
                 {
-                    for (var x = HalfTileWidth - 1; x < sourceData.Width - HalfTileWidth; x++)
+                    for (var x = Tile.HalfWidth - 1; x < sourceData.Width - Tile.HalfWidth; x++)
                     {
                         var index = y*sourceData.Stride + x;
                         if (sourceBytes[index] == colorIndex)
                         {
-                            for (var r = 0; r < TileRows.Length; r++)
+                            for (var r = 0; r < Tile.Rows.Length; r++)
                             {
-                                for (var p = 0; p < TileRows[r]; p++)
+                                for (var p = 0; p < Tile.Rows[r]; p++)
                                 {
-                                    var i = index + p + r*sourceData.Stride - (TileRows[r] - 2)/2;
+                                    var i = index + p + r*sourceData.Stride - (Tile.Rows[r] - 2)/2;
                                     if (sourceBytes[i] != colorIndex)
                                     {
                                         goto Continue;
@@ -72,7 +46,7 @@ namespace ArcanumTextureSlicer.Core
                                 }
                             }
                             point.X = x + 1;
-                            point.Y = y + HalfTileHeight;
+                            point.Y = y + Tile.HalfHeight;
                             goto Finish;
                         }
                         Continue:
@@ -92,7 +66,7 @@ namespace ArcanumTextureSlicer.Core
 
         public static Bitmap CreateTile(this Bitmap source, int x, int y)
         {
-            var tile = CloneRegion(source, new Rectangle(x, y, TileWidth, TileHeight));
+            var tile = CloneRegion(source, new Rectangle(x, y, Tile.Width, Tile.Height));
             tile.DrawAlpha();
             return tile;
         }
@@ -146,11 +120,11 @@ namespace ArcanumTextureSlicer.Core
                 var canvasBytes = new byte[data.Height*data.Stride];
                 Marshal.Copy(data.Scan0, canvasBytes, 0, canvasBytes.Length);
 
-                for (var y = 0; y < TileHeight; y++)
+                for (var y = 0; y < Tile.Height; y++)
                 {
-                    for (var x = 0; x < TileWidth; x++)
+                    for (var x = 0; x < Tile.Width; x++)
                     {
-                        if (x < (TileWidth - TileRows[y])/2 || x >= (TileWidth + TileRows[y])/2)
+                        if (!Tile.HitTest(x, y))
                         {
                             canvasBytes[x + y*data.Stride] = 0;
                         }
@@ -243,8 +217,8 @@ namespace ArcanumTextureSlicer.Core
         public static void IterateTiles(this Bitmap bitmap, int initTileX, int initTileY,
             Action<TilePosition> action)
         {
-            var n = Math.Ceiling((double) (bitmap.Width - initTileX)/(TileWidth + TileXSpace));
-            var m = Math.Ceiling((double) (bitmap.Height - initTileY)/TileHeight)*2;
+            var n = Math.Ceiling((double) (bitmap.Width - initTileX)/(Tile.Width + Tile.XSpace));
+            var m = Math.Ceiling((double) (bitmap.Height - initTileY)/Tile.Height)*2;
             for (var i = 0; i < n; i++)
             {
                 for (var j = 0; j < m; j++)
@@ -252,8 +226,9 @@ namespace ArcanumTextureSlicer.Core
                     var evenRow = j%2;
                     var oddRow = 1 - evenRow;
 
-                    var tileX = initTileX + i*TileWidth - HalfTileWidth*oddRow + i*TileXSpace + HalfTileXSpace*evenRow;
-                    var tileY = initTileY + j*HalfTileHeight - HalfTileHeight;
+                    var tileX = initTileX + i*Tile.Width - Tile.HalfWidth*oddRow + i*Tile.XSpace +
+                                Tile.HalfXSpace*evenRow;
+                    var tileY = initTileY + j*Tile.HalfHeight - Tile.HalfHeight;
 
                     action.Invoke(new TilePosition
                     {
