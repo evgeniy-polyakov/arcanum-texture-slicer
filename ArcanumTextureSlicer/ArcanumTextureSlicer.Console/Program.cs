@@ -44,44 +44,36 @@ namespace ArcanumTextureSlicer.Console
                     var initTileX = args.Length > 2 ? int.Parse(args[2]) : initTileCenter.X;
                     var initTileY = args.Length > 3 ? int.Parse(args[3]) : initTileCenter.Y;
 
-                    var n = Math.Ceiling((double) (inputBitmap.Width - initTileX)/(tileWidth + xSpace));
-                    var m = Math.Ceiling((double) (inputBitmap.Height - initTileY)/tileHeight)*2;
-                    for (var i = 0; i < n; i++)
+                    inputBitmap.IterateTiles(initTileX, initTileY, p =>
                     {
-                        for (var j = 0; j < m; j++)
+                        if (p.Row == 0 && p.Column == 0 &&
+                            initTileCenter.X == initTileX && initTileCenter.Y == initTileY)
                         {
-                            if (i == 0 && j == 0 && initTileCenter.X == initTileX && initTileCenter.Y == initTileY)
+                            // Do not export start tile
+                            return;
+                        }
+                        using (var outputBitmap = p.Bitmap.CreateTile(p.X, p.Y))
+                        {
+                            if (outputBitmap.IsTransparent())
                             {
-                                // Do not export start tile
-                                continue;
+                                System.Console.WriteLine($"Transparent tile at {p.Row},{p.Column}");
                             }
-                            var evenRow = j%2;
-                            var oddRow = 1 - evenRow;
-                            using (var outputBitmap = inputBitmap.CreateTile(
-                                initTileX + i*tileWidth - halfTileWidth*oddRow + i*xSpace + halfXSpace*evenRow,
-                                initTileY + j*halfTileHeight - halfTileHeight))
+                            else
                             {
-                                if (outputBitmap.IsTransparent())
+                                try
                                 {
-                                    System.Console.WriteLine($"Transparent tile at {j},{i}");
+                                    var tilePath =
+                                        $"{outputFolder.TrimEnd('/', '\\')}\\tile_{LeadingZero(p.Row)}_{LeadingZero(p.Column)}.bmp";
+                                    System.Console.WriteLine(tilePath);
+                                    outputBitmap.Save(tilePath, ImageFormat.Bmp);
                                 }
-                                else
+                                catch (Exception e)
                                 {
-                                    try
-                                    {
-                                        var tilePath =
-                                            $"{outputFolder.TrimEnd('/', '\\')}\\tile_{LeadingZero(j)}_{LeadingZero(i)}.bmp";
-                                        System.Console.WriteLine(tilePath);
-                                        outputBitmap.Save(tilePath, ImageFormat.Bmp);
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        System.Console.WriteLine(e);
-                                    }
+                                    System.Console.WriteLine(e);
                                 }
                             }
                         }
-                    }
+                    });
                 }
             }
             catch (FileNotFoundException e)

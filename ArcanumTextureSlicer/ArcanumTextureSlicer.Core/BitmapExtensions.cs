@@ -251,5 +251,41 @@ namespace ArcanumTextureSlicer.Core
             }
             return true;
         }
+
+        public static void IterateTiles(this Bitmap bitmap, int initTileX, int initTileY,
+            Action<TilePosition> action)
+        {
+            var n = Math.Ceiling((double) (bitmap.Width - initTileX)/(TileWidth + TileXSpace));
+            var m = Math.Ceiling((double) (bitmap.Height - initTileY)/TileHeight)*2;
+            for (var i = 0; i < n; i++)
+            {
+                for (var j = 0; j < m; j++)
+                {
+                    var evenRow = j%2;
+                    var oddRow = 1 - evenRow;
+
+                    var tileX = initTileX + i*TileWidth - HalfTileWidth*oddRow + i*TileXSpace + HalfTileXSpace*evenRow;
+                    var tileY = initTileY + j*HalfTileHeight - HalfTileHeight;
+
+                    action.Invoke(new TilePosition
+                    {
+                        Bitmap = bitmap,
+                        Row = j,
+                        Column = i,
+                        X = tileX,
+                        Y = tileY
+                    });
+                }
+            }
+        }
+    }
+
+    public struct TilePosition
+    {
+        public Bitmap Bitmap;
+        public int Row;
+        public int Column;
+        public int X;
+        public int Y;
     }
 }
