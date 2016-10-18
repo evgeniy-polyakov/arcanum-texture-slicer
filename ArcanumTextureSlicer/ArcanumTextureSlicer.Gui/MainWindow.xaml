@@ -20,7 +20,10 @@
         </Menu>
         <ScrollViewer HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
-            <Image Name="BitmapViewer" />
+            <Grid>
+                <Image Name="BitmapViewer"/>
+                <Image Name="GridViewer"/>
+            </Grid>
         </ScrollViewer>
     </DockPanel>
 
