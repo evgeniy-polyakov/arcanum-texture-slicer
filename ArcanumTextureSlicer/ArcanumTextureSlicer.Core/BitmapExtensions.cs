@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
-using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace ArcanumTextureSlicer.Core
@@ -14,12 +13,25 @@ namespace ArcanumTextureSlicer.Core
         public const int HalfTileHeight = 20;
         public const int TileXSpace = 2;
         public const int HalfTileXSpace = 1;
-        private static Bitmap _sampleTile;
 
-        public static Bitmap SampleTile =>
-            _sampleTile ??
-            (_sampleTile = new Bitmap(Assembly.GetExecutingAssembly()
-                .GetManifestResourceStream("ArcanumTextureSlicer.Core.Resources.SampleTile.png")));
+        private static int[] _tileRows;
+
+        private static int[] TileRows => _tileRows ?? (_tileRows = GetTileRows());
+
+        private static int[] GetTileRows()
+        {
+            var rows = new int[40];
+            for (var i = 0; i < 20; i++)
+            {
+                rows[i] = 2 + i*4;
+            }
+            for (var i = 19; i >= 0; i--)
+            {
+                rows[39 - i] = 2 + i*4;
+            }
+            return rows;
+        }
+
 
         public static Point GetStartTileCenter(this Bitmap source)
         {
@@ -34,7 +46,6 @@ namespace ArcanumTextureSlicer.Core
                 Console.WriteLine($"Start tile color {Color.Black} is not found in palette.");
                 return point;
             }
-            var tileRows = GetTileRows();
             var sourceData = source.LockBits(new Rectangle(0, 0, source.Width, source.Height),
                 ImageLockMode.ReadOnly, source.PixelFormat);
             try
@@ -49,11 +60,11 @@ namespace ArcanumTextureSlicer.Core
                         var index = y*sourceData.Stride + x;
                         if (sourceBytes[index] == colorIndex)
                         {
-                            for (var r = 0; r < tileRows.Length; r++)
+                            for (var r = 0; r < TileRows.Length; r++)
                             {
-                                for (var p = 0; p < tileRows[r]; p++)
+                                for (var p = 0; p < TileRows[r]; p++)
                                 {
-                                    var i = index + p + r*sourceData.Stride - (tileRows[r] - 2)/2;
+                                    var i = index + p + r*sourceData.Stride - (TileRows[r] - 2)/2;
                                     if (sourceBytes[i] != colorIndex)
                                     {
                                         goto Continue;
@@ -79,26 +90,10 @@ namespace ArcanumTextureSlicer.Core
             return point;
         }
 
-        private static int[] GetTileRows()
-        {
-            var rows = new int[40];
-            for (var i = 0; i < 20; i++)
-            {
-                rows[i] = 2 + i*4;
-            }
-            for (var i = 19; i >= 0; i--)
-            {
-                rows[39 - i] = 2 + i*4;
-            }
-            return rows;
-        }
-
-        //private static bool 
-
         public static Bitmap CreateTile(this Bitmap source, int x, int y)
         {
-            var tile = CloneRegion(source, new Rectangle(x, y, SampleTile.Width, SampleTile.Height));
-            tile.DrawAlpha(SampleTile);
+            var tile = CloneRegion(source, new Rectangle(x, y, TileWidth, TileHeight));
+            tile.DrawAlpha();
             return tile;
         }
 
@@ -142,38 +137,31 @@ namespace ArcanumTextureSlicer.Core
             }
         }
 
-        public static void DrawAlpha(this Bitmap canvas, Bitmap sample)
+        public static void DrawAlpha(this Bitmap tile)
         {
-            var rect = new Rectangle(0, 0, canvas.Width, canvas.Height);
-
-            var sampleData = sample.LockBits(rect, ImageLockMode.ReadOnly, sample.PixelFormat);
-            var canvasData = canvas.LockBits(rect, ImageLockMode.WriteOnly, canvas.PixelFormat);
+            var rect = new Rectangle(0, 0, tile.Width, tile.Height);
+            var data = tile.LockBits(rect, ImageLockMode.WriteOnly, tile.PixelFormat);
             try
             {
-                var sampleAlphaIndex = sample.GetColorIndex(Color.Blue);
+                var canvasBytes = new byte[data.Height*data.Stride];
+                Marshal.Copy(data.Scan0, canvasBytes, 0, canvasBytes.Length);
 
-                var sampleBytes = new byte[sampleData.Height*sampleData.Stride];
-                var canvasBytes = new byte[canvasData.Height*canvasData.Stride];
-                Marshal.Copy(sampleData.Scan0, sampleBytes, 0, sampleBytes.Length);
-                Marshal.Copy(canvasData.Scan0, canvasBytes, 0, canvasBytes.Length);
-
-                for (var y = 0; y < canvasData.Height; y++)
+                for (var y = 0; y < TileHeight; y++)
                 {
-                    for (var x = 0; x < canvasData.Width; x++)
+                    for (var x = 0; x < TileWidth; x++)
                     {
-                        if (sampleBytes[x + y*sampleData.Stride] == sampleAlphaIndex)
+                        if (x < (TileWidth - TileRows[y])/2 || x >= (TileWidth + TileRows[y])/2)
                         {
-                            canvasBytes[x + y*canvasData.Stride] = 0;
+                            canvasBytes[x + y*data.Stride] = 0;
                         }
                     }
                 }
 
-                Marshal.Copy(canvasBytes, 0, canvasData.Scan0, canvasBytes.Length);
+                Marshal.Copy(canvasBytes, 0, data.Scan0, canvasBytes.Length);
             }
             finally
             {
-                sample.UnlockBits(sampleData);
-                canvas.UnlockBits(canvasData);
+                tile.UnlockBits(data);
             }
         }
 
