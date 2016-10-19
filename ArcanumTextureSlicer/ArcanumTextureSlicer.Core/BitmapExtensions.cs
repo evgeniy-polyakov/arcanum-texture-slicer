@@ -217,8 +217,8 @@ namespace ArcanumTextureSlicer.Core
         public static void IterateTiles(this Bitmap bitmap, int initTileX, int initTileY,
             Action<TilePosition> action)
         {
-            var n = Math.Ceiling((double) (bitmap.Width - initTileX)/(Tile.Width + Tile.XSpace));
-            var m = Math.Ceiling((double) (bitmap.Height - initTileY)/Tile.Height)*2;
+            var n = Math.Ceiling((double) (bitmap.Width - initTileX)/(Tile.Width + Tile.XSpace)) + 1;
+            var m = Math.Ceiling((double) (bitmap.Height - initTileY)/Tile.Height)*2 + 1;
             for (var i = 0; i < n; i++)
             {
                 for (var j = 0; j < m; j++)

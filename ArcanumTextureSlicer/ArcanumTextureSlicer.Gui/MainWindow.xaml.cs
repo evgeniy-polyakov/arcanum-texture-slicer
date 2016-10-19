@@ -22,7 +22,7 @@ namespace ArcanumTextureSlicer.Gui
             InitializeComponent();
 
             RenderOptions.SetBitmapScalingMode(BitmapViewer, BitmapScalingMode.NearestNeighbor);
-            RenderOptions.SetBitmapScalingMode(GridViewer, BitmapScalingMode.Fant);
+            RenderOptions.SetBitmapScalingMode(GridViewer, BitmapScalingMode.NearestNeighbor);
         }
 
         private void Open_CanExecute(object sender, CanExecuteRoutedEventArgs e)

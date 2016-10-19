@@ -17,13 +17,13 @@ namespace ArcanumTextureSlicer.Gui.Controls
             set
             {
                 _offsetX = value;
-                while (_offsetX < -Tile.Width)
+                while (_offsetX < -Tile.Width - Tile.XSpace)
                 {
-                    _offsetX += Tile.Width;
+                    _offsetX += Tile.Width + Tile.XSpace;
                 }
                 while (_offsetX > 0)
                 {
-                    _offsetX -= Tile.Width;
+                    _offsetX -= Tile.Width + Tile.XSpace;
                 }
             }
         }
@@ -66,6 +66,14 @@ namespace ArcanumTextureSlicer.Gui.Controls
             Source = BitmapSource.Create(
                 bitmap.Width, bitmap.Height, 96, 96,
                 PixelFormats.Bgra32, null, pixels, stride);
+        }
+
+        public void ClearSelection()
+        {   
+        }
+
+        public void SelectTileAt(int x, int y)
+        {   
         }
     }
 }
