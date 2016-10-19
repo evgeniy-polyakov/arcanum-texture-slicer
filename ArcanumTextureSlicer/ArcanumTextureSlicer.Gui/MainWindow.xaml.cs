@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -119,7 +120,7 @@ namespace ArcanumTextureSlicer.Gui
                         .ToList()),
                     bytes, stride);
 
-                DisplayGrid();
+                //DisplayGrid();
             }
             catch (Exception e)
             {
@@ -157,6 +158,16 @@ namespace ArcanumTextureSlicer.Gui
         private void ShowError(Exception e)
         {
             MessageBox.Show(this, e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
+        private void MoveGrid_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _bitmap != null;
+        }
+
+        private void MoveGrid_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            DisplayGrid();
         }
     }
 }

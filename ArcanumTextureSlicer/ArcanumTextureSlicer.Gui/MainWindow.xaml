@@ -4,11 +4,20 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArcanumTextureSlicer.Gui"
+        xmlns:c="clr-namespace:ArcanumTextureSlicer.Gui.Commands"
         mc:Ignorable="d"
         Title="Arcanum Texture Slicer" Height="600" Width="800">
 
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Open" Executed="Open_Executed" CanExecute="Open_CanExecute" />
+        <CommandBinding Command="c:Commands.MoveGridUp" Executed="MoveGrid_Executed"
+                        CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="c:Commands.MoveGridDown" Executed="MoveGrid_Executed"
+                        CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="c:Commands.MoveGridLeft" Executed="MoveGrid_Executed"
+                        CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="c:Commands.MoveGridRight" Executed="MoveGrid_Executed"
+                        CanExecute="MoveGrid_CanExecute" />
     </Window.CommandBindings>
 
     <DockPanel>
@@ -17,12 +26,19 @@
                 <MenuItem Header="Open..." Command="ApplicationCommands.Open" />
                 <MenuItem Header="Export..." />
             </MenuItem>
+            <MenuItem Header="Grid">
+                <MenuItem Header="Move Up" Command="c:Commands.MoveGridUp" CommandParameter="up" />
+                <MenuItem Header="Move Down" Command="c:Commands.MoveGridDown" CommandParameter="down" />
+                <MenuItem Header="Move Left" Command="c:Commands.MoveGridLeft" CommandParameter="left" />
+                <MenuItem Header="Move Right" Command="c:Commands.MoveGridRight" CommandParameter="right" />
+            </MenuItem>
         </Menu>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto"
+        <ScrollViewer Focusable="False"
+                      HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
             <Grid>
-                <Image Name="BitmapViewer"/>
-                <Image Name="GridViewer"/>
+                <Image Name="BitmapViewer" />
+                <Image Name="GridViewer" />
             </Grid>
         </ScrollViewer>
     </DockPanel>
