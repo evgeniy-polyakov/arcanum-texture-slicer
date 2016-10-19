@@ -4,6 +4,7 @@ using System.Drawing.Imaging;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using ArcanumTextureSlicer.Gui.Commands;
 using Microsoft.Win32;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
@@ -92,10 +93,6 @@ namespace ArcanumTextureSlicer.Gui
             }
         }
 
-        private void DisplayGrid()
-        {
-        }
-
         private void ShowError(Exception e)
         {
             MessageBox.Show(this, e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -108,7 +105,19 @@ namespace ArcanumTextureSlicer.Gui
 
         private void MoveGrid_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            DisplayGrid();
+            var moveGridCommand = e.Command as MoveGridCommand;
+            if (moveGridCommand != null)
+            {
+                GridViewer.OffsetX += moveGridCommand.X;
+                GridViewer.OffsetY += moveGridCommand.Y;
+            }
+            var resetGridCommand = e.Command as ResetGridCommand;
+            if (resetGridCommand != null)
+            {
+                GridViewer.OffsetX = 0;
+                GridViewer.OffsetY = 0;
+            }
+            GridViewer.DisplayGrid(_bitmap);
         }
     }
 }

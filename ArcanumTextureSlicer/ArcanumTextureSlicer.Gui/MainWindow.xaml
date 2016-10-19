@@ -4,21 +4,22 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ArcanumTextureSlicer.Gui"
-        xmlns:commands="clr-namespace:ArcanumTextureSlicer.Gui.Commands"
+        xmlns:cmd="clr-namespace:ArcanumTextureSlicer.Gui.Commands"
         xmlns:controls="clr-namespace:ArcanumTextureSlicer.Gui.Controls"
         mc:Ignorable="d"
         Title="Arcanum Texture Slicer" Height="600" Width="800">
 
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Open" Executed="Open_Executed" CanExecute="Open_CanExecute" />
-        <CommandBinding Command="commands:Commands.MoveGridUp" Executed="MoveGrid_Executed"
-                        CanExecute="MoveGrid_CanExecute" />
-        <CommandBinding Command="commands:Commands.MoveGridDown" Executed="MoveGrid_Executed"
-                        CanExecute="MoveGrid_CanExecute" />
-        <CommandBinding Command="commands:Commands.MoveGridLeft" Executed="MoveGrid_Executed"
-                        CanExecute="MoveGrid_CanExecute" />
-        <CommandBinding Command="commands:Commands.MoveGridRight" Executed="MoveGrid_Executed"
-                        CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridUp1" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridUp10" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridDown1" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridDown10" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridLeft1" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridLeft10" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridRight1" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridRight10" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ResetGrid" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
     </Window.CommandBindings>
 
     <DockPanel>
@@ -28,10 +29,15 @@
                 <MenuItem Header="Export..." />
             </MenuItem>
             <MenuItem Header="Grid">
-                <MenuItem Header="Move Up" Command="commands:Commands.MoveGridUp" CommandParameter="up" />
-                <MenuItem Header="Move Down" Command="commands:Commands.MoveGridDown" CommandParameter="down" />
-                <MenuItem Header="Move Left" Command="commands:Commands.MoveGridLeft" CommandParameter="left" />
-                <MenuItem Header="Move Right" Command="commands:Commands.MoveGridRight" CommandParameter="right" />
+                <MenuItem Header="Move Up 1px" Command="cmd:Commands.MoveGridUp1" />
+                <MenuItem Header="Move Up 10px" Command="cmd:Commands.MoveGridUp10" />
+                <MenuItem Header="Move Down 1px" Command="cmd:Commands.MoveGridDown1" />
+                <MenuItem Header="Move Down 10px" Command="cmd:Commands.MoveGridDown10" />
+                <MenuItem Header="Move Left 1px" Command="cmd:Commands.MoveGridLeft1" />
+                <MenuItem Header="Move Left 10px" Command="cmd:Commands.MoveGridLeft10" />
+                <MenuItem Header="Move Right 1px" Command="cmd:Commands.MoveGridRight1" />
+                <MenuItem Header="Move Right 10px" Command="cmd:Commands.MoveGridRight10" />
+                <MenuItem Header="Reset" Command="cmd:Commands.ResetGrid" />
             </MenuItem>
         </Menu>
         <ScrollViewer Focusable="False"

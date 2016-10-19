@@ -8,15 +8,49 @@ namespace ArcanumTextureSlicer.Gui.Controls
 {
     public class GridViewer : Image
     {
-        public int OffsetX { get; private set; }
-        public int OffsetY { get; private set; }
+        private int _offsetX;
+        private int _offsetY;
+
+        public int OffsetX
+        {
+            get { return _offsetX; }
+            set
+            {
+                _offsetX = value;
+                while (_offsetX < -Tile.Width)
+                {
+                    _offsetX += Tile.Width;
+                }
+                while (_offsetX > 0)
+                {
+                    _offsetX -= Tile.Width;
+                }
+            }
+        }
+
+        public int OffsetY
+        {
+            get { return _offsetY; }
+            set
+            {
+                _offsetY = value;
+                while (_offsetY < -Tile.Height)
+                {
+                    _offsetY += Tile.Height;
+                }
+                while (_offsetY > 0)
+                {
+                    _offsetY -= Tile.Height;
+                }
+            }
+        }
 
         public void DisplayGrid(Bitmap bitmap)
         {
             var stride = ((bitmap.Width*32 + 31) & ~31)/8;
             var pixels = new uint[bitmap.Width*bitmap.Height];
 
-            bitmap.IterateTiles(-OffsetX, -OffsetY, position =>
+            bitmap.IterateTiles(OffsetX, OffsetY, position =>
             {
                 foreach (var point in Tile.Outline)
                 {
