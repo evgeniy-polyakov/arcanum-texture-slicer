@@ -117,7 +117,7 @@ namespace ArcanumTextureSlicer.Gui
                 GridViewer.OffsetX = 0;
                 GridViewer.OffsetY = 0;
             }
-            GridViewer.DisplayGrid(_bitmap);
+            GridViewer.UpdateGrid();
         }
     }
 }
