@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
@@ -141,6 +142,10 @@ namespace ArcanumTextureSlicer.Core
 
         public static void DrawImage(this Bitmap canvas, Bitmap source, int canvasX, int canvasY, Rectangle sourceRect)
         {
+            if (sourceRect.Width == 0 || sourceRect.Height == 0)
+            {
+                return;
+            }
             var sourceData = source.LockBits(sourceRect, ImageLockMode.ReadOnly, source.PixelFormat);
             var canvasData = canvas.LockBits(new Rectangle(canvasX, canvasY, sourceRect.Width, sourceRect.Height),
                 ImageLockMode.WriteOnly, canvas.PixelFormat);
@@ -214,14 +219,13 @@ namespace ArcanumTextureSlicer.Core
             return true;
         }
 
-        public static void IterateTiles(this Bitmap bitmap, int initTileX, int initTileY,
-            Action<TilePosition> action)
+        public static IEnumerable<Tile> ToTiles(this Bitmap bitmap, int initTileX, int initTileY)
         {
             var n = Math.Ceiling((double) (bitmap.Width - initTileX)/(Tile.Width + Tile.XSpace)) + 1;
             var m = Math.Ceiling((double) (bitmap.Height - initTileY)/Tile.Height)*2 + 1;
-            for (var i = 0; i < n; i++)
+            for (var j = 0; j < m; j++)
             {
-                for (var j = 0; j < m; j++)
+                for (var i = 0; i < n; i++)
                 {
                     var evenRow = j%2;
                     var oddRow = 1 - evenRow;
@@ -230,25 +234,15 @@ namespace ArcanumTextureSlicer.Core
                                 Tile.HalfXSpace*evenRow;
                     var tileY = initTileY + j*Tile.HalfHeight - Tile.HalfHeight;
 
-                    action.Invoke(new TilePosition
+                    yield return new Tile
                     {
-                        Bitmap = bitmap,
                         Row = j,
                         Column = i,
                         X = tileX,
                         Y = tileY
-                    });
+                    };
                 }
             }
         }
-    }
-
-    public struct TilePosition
-    {
-        public Bitmap Bitmap;
-        public int Row;
-        public int Column;
-        public int X;
-        public int Y;
     }
 }

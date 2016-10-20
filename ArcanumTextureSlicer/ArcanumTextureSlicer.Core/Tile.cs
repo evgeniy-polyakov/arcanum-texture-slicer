@@ -2,7 +2,7 @@
 
 namespace ArcanumTextureSlicer.Core
 {
-    public class Tile
+    public struct Tile
     {
         public const int Width = 78;
         public const int HalfWidth = 39;
@@ -53,5 +53,10 @@ namespace ArcanumTextureSlicer.Core
                    && x >= (Width - Rows[y])/2
                    && x < (Width + Rows[y])/2;
         }
+
+        public int Row;
+        public int Column;
+        public int X;
+        public int Y;
     }
 }

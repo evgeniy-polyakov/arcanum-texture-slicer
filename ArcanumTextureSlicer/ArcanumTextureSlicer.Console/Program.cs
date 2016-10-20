@@ -37,26 +37,27 @@ namespace ArcanumTextureSlicer.Console
                     var initTileX = args.Length > 2 ? int.Parse(args[2]) : initTileCenter.X;
                     var initTileY = args.Length > 3 ? int.Parse(args[3]) : initTileCenter.Y;
 
-                    inputBitmap.IterateTiles(initTileX, initTileY, p =>
+                    foreach (var tile in inputBitmap.ToTiles(initTileX, initTileY))
                     {
-                        if (p.Row == 0 && p.Column == 0 &&
-                            initTileCenter.X == initTileX && initTileCenter.Y == initTileY)
+                        if (tile.Row == 0 && tile.Column == 0 &&
+                            initTileCenter.X == initTileX &&
+                            initTileCenter.Y == initTileY)
                         {
                             // Do not export start tile
-                            return;
+                            continue;
                         }
-                        using (var outputBitmap = p.Bitmap.CreateTile(p.X, p.Y))
+                        using (var outputBitmap = inputBitmap.CreateTile(tile.X, tile.Y))
                         {
                             if (outputBitmap.IsTransparent())
                             {
-                                System.Console.WriteLine($"Transparent tile at {p.Row},{p.Column}");
+                                System.Console.WriteLine($"Transparent tile at {tile.Row},{tile.Column}");
                             }
                             else
                             {
                                 try
                                 {
                                     var tilePath =
-                                        $"{outputFolder.TrimEnd('/', '\\')}\\tile_{LeadingZero(p.Row)}_{LeadingZero(p.Column)}.bmp";
+                                        $"{outputFolder.TrimEnd('/', '\\')}\\tile_{LeadingZero(tile.Row)}_{LeadingZero(tile.Column)}.bmp";
                                     System.Console.WriteLine(tilePath);
                                     outputBitmap.Save(tilePath, ImageFormat.Bmp);
                                 }
@@ -66,7 +67,7 @@ namespace ArcanumTextureSlicer.Console
                                 }
                             }
                         }
-                    });
+                    }
                 }
             }
             catch (FileNotFoundException e)

@@ -50,18 +50,18 @@ namespace ArcanumTextureSlicer.Gui.Controls
             var stride = ((bitmap.Width*32 + 31) & ~31)/8;
             var pixels = new uint[bitmap.Width*bitmap.Height];
 
-            bitmap.IterateTiles(OffsetX, OffsetY, position =>
+            foreach (var tile in bitmap.ToTiles(OffsetX, OffsetY))
             {
                 foreach (var point in Tile.Outline)
                 {
-                    var x = position.X + point.X;
-                    var y = position.Y + point.Y;
+                    var x = tile.X + point.X;
+                    var y = tile.Y + point.Y;
                     if (x >= 0 && x < bitmap.Width && y >= 0 && y < bitmap.Height)
                     {
                         pixels[y*bitmap.Width + x] = 0xcc00ff00;
                     }
                 }
-            });
+            }
 
             Source = BitmapSource.Create(
                 bitmap.Width, bitmap.Height, 96, 96,
@@ -69,11 +69,19 @@ namespace ArcanumTextureSlicer.Gui.Controls
         }
 
         public void ClearSelection()
-        {   
+        {
         }
 
         public void SelectTileAt(int x, int y)
-        {   
+        {
         }
+    }
+
+    public struct GridTile
+    {
+        public int X;
+        public int Y;
+        public int Row;
+        public int Column;
     }
 }
