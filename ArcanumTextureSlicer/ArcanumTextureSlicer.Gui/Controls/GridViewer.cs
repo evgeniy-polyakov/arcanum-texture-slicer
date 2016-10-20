@@ -12,14 +12,18 @@ namespace ArcanumTextureSlicer.Gui.Controls
     {
         private const int GridTileWidth = Tile.Width + Tile.XSpace;
         private const int GridTileHeight = Tile.Height;
+        private const uint ColorTransparent = 0x00000000;
+        private const uint ColorSelection = 0x6600ff00;
+        private const uint ColorGrid = 0xcc00ff00;
+
         private int _height;
         private int _offsetX;
         private int _offsetY;
         private uint[] _pixels;
         private int _stride;
         private IList<GridTile> _tiles;
-
         private int _width;
+
 
         public int OffsetX
         {
@@ -30,10 +34,12 @@ namespace ArcanumTextureSlicer.Gui.Controls
                 while (_offsetX < -GridTileWidth)
                 {
                     _offsetX += GridTileWidth;
+                    ShiftSelectedTiles(-1, 0);
                 }
                 while (_offsetX > 0)
                 {
                     _offsetX -= GridTileWidth;
+                    ShiftSelectedTiles(1, 0);
                 }
             }
         }
@@ -47,10 +53,12 @@ namespace ArcanumTextureSlicer.Gui.Controls
                 while (_offsetY < -GridTileHeight)
                 {
                     _offsetY += GridTileHeight;
+                    ShiftSelectedTiles(0, -1);
                 }
                 while (_offsetY > 0)
                 {
                     _offsetY -= GridTileHeight;
+                    ShiftSelectedTiles(0, 1);
                 }
             }
         }
@@ -64,11 +72,11 @@ namespace ArcanumTextureSlicer.Gui.Controls
             _stride = ((bitmap.Width*32 + 31) & ~31)/8;
 
             _tiles = bitmap
-                .ToTiles(-GridTileWidth, -GridTileHeight)
+                .ToTiles(0,0)//-GridTileWidth, -GridTileHeight)
                 .Select(t => new GridTile
                 {
-                    X = t.X + GridTileWidth,
-                    Y = t.Y + GridTileHeight,
+                    X = t.X,// + GridTileWidth,
+                    Y = t.Y,// + GridTileHeight,
                     Row = t.Row,
                     Column = t.Column
                 })
@@ -81,7 +89,7 @@ namespace ArcanumTextureSlicer.Gui.Controls
         {
             for (var i = 0; i < _pixels.Length; i++)
             {
-                _pixels[i] = 0x00000000;
+                _pixels[i] = ColorTransparent;
             }
             foreach (var tile in _tiles)
             {
@@ -95,8 +103,16 @@ namespace ArcanumTextureSlicer.Gui.Controls
                             var y = tile.Y + OffsetY - Tile.HalfHeight + r;
                             if (x >= 0 && x < _width && y >= 0 && y < _height)
                             {
-                                _pixels[y*_width + x] = 0x7f00ff00;
+                                _pixels[y*_width + x] = ColorSelection;
                             }
+                        }
+                    }
+                    {
+                        var x = tile.X + OffsetX;
+                        var y = tile.Y + OffsetY;
+                        if (x >= 0 && x < _width && y >= 0 && y < _height)
+                        {
+                            _pixels[y*_width + x] = ColorGrid;
                         }
                     }
                 }
@@ -106,7 +122,7 @@ namespace ArcanumTextureSlicer.Gui.Controls
                     var y = tile.Y + point.Y + OffsetY;
                     if (x >= 0 && x < _width && y >= 0 && y < _height)
                     {
-                        _pixels[y*_width + x] = 0xcc00ff00;
+                        _pixels[y*_width + x] = ColorGrid;
                     }
                 }
             }
@@ -134,6 +150,26 @@ namespace ArcanumTextureSlicer.Gui.Controls
                     break;
                 }
             }
+        }
+
+        private void ShiftSelectedTiles(int column, int row)
+        {
+            var selectedTiles = _tiles.Where(t => t.Selected).ToList();
+            selectedTiles.ForEach(t => t.Selected = false);
+
+            selectedTiles.Select(t => _tiles.FirstOrDefault(
+                t1 => t1.Column == t.Column + column && t1.Row == t.Row + row*2))
+                .Where(t => t != null)
+                .ToList()
+                .ForEach(t => t.Selected = true);
+
+            _tiles.Where(t =>
+                t.X + Tile.HalfWidth + OffsetX < 0 ||
+                t.X - Tile.HalfWidth + OffsetX >= _width ||
+                t.Y + Tile.HalfHeight + OffsetY < 0 ||
+                t.Y - Tile.HalfHeight + OffsetY >= _height)
+                .ToList()
+                .ForEach(t => t.Selected = false);
         }
     }
 

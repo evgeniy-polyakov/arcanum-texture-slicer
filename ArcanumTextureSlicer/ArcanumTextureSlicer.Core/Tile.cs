@@ -34,16 +34,16 @@ namespace ArcanumTextureSlicer.Core
         private static Point[] GetOutline()
         {
             var outline = new Point[38*2 + 4];
-            outline[0] = new Point(38, 0);
-            outline[1] = new Point(39, 0);
+            outline[0] = new Point(-1, -20);
+            outline[1] = new Point(0, -20);
             for (var i = 1; i <= 38; i++)
             {
                 var j = 2 + (i - 1)*2;
-                outline[j] = new Point(HalfWidth - Rows[i]/2, i);
-                outline[j + 1] = new Point(HalfWidth + Rows[i]/2 - 1, i);
+                outline[j] = new Point(-Rows[i]/2, i - 20);
+                outline[j + 1] = new Point(Rows[i]/2 - 1, i - 20);
             }
-            outline[outline.Length - 2] = new Point(38, 39);
-            outline[outline.Length - 1] = new Point(39, 39);
+            outline[outline.Length - 2] = new Point(-1, 19);
+            outline[outline.Length - 1] = new Point(0, 19);
             return outline;
         }
 

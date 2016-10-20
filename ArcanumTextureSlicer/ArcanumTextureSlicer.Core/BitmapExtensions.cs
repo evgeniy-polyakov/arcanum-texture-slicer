@@ -222,7 +222,7 @@ namespace ArcanumTextureSlicer.Core
         public static IEnumerable<Tile> ToTiles(this Bitmap bitmap, int initTileX, int initTileY)
         {
             var n = Math.Ceiling((double) (bitmap.Width - initTileX)/(Tile.Width + Tile.XSpace)) + 1;
-            var m = Math.Ceiling((double) (bitmap.Height - initTileY)/Tile.Height)*2 + 1;
+            var m = Math.Ceiling((double) (bitmap.Height - initTileY)/Tile.Height)*2 + 2;
             for (var j = 0; j < m; j++)
             {
                 for (var i = 0; i < n; i++)
