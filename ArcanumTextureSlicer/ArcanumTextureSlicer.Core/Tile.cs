@@ -49,9 +49,9 @@ namespace ArcanumTextureSlicer.Core
 
         public static bool HitTest(int x, int y)
         {
-            return y >= 0 && y < Rows.Length
-                   && x >= (Width - Rows[y])/2
-                   && x < (Width + Rows[y])/2;
+            return y >= -HalfHeight && y < HalfHeight
+                   && x >= -Rows[y + HalfHeight]/2
+                   && x < Rows[y + HalfHeight]/2;
         }
 
         public int Row;

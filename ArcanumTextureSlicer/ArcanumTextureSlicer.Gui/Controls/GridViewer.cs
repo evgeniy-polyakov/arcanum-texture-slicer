@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ArcanumTextureSlicer.Core;
@@ -86,6 +85,21 @@ namespace ArcanumTextureSlicer.Gui.Controls
             }
             foreach (var tile in _tiles)
             {
+                if (tile.Selected)
+                {
+                    for (var r = 0; r < Tile.Rows.Length; r++)
+                    {
+                        for (var p = 0; p < Tile.Rows[r]; p++)
+                        {
+                            var x = tile.X + OffsetX - Tile.Rows[r]/2 + p;
+                            var y = tile.Y + OffsetY - Tile.HalfHeight + r;
+                            if (x >= 0 && x < _width && y >= 0 && y < _height)
+                            {
+                                _pixels[y*_width + x] = 0x7f00ff00;
+                            }
+                        }
+                    }
+                }
                 foreach (var point in Tile.Outline)
                 {
                     var x = tile.X + point.X + OffsetX;
@@ -103,19 +117,32 @@ namespace ArcanumTextureSlicer.Gui.Controls
 
         public void ClearSelection()
         {
+            foreach (var tile in _tiles)
+            {
+                tile.Selected = false;
+            }
         }
 
         public void SelectTileAt(int x, int y)
         {
+            foreach (var tile in _tiles)
+            {
+                if (Tile.HitTest(x - tile.X - OffsetX, y - tile.Y - OffsetY))
+                {
+                    tile.Selected = !tile.Selected;
+                    UpdateGrid();
+                    break;
+                }
+            }
         }
     }
 
-    public struct GridTile
+    public class GridTile
     {
+        public int Column;
+        public int Row;
+        public bool Selected;
         public int X;
         public int Y;
-        public int Row;
-        public int Column;
-        public bool Selected;
     }
 }

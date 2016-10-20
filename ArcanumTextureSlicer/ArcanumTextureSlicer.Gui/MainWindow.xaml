@@ -11,14 +11,22 @@
 
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Open" Executed="Open_Executed" CanExecute="Open_CanExecute" />
-        <CommandBinding Command="cmd:Commands.MoveGridUp1" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
-        <CommandBinding Command="cmd:Commands.MoveGridUp10" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
-        <CommandBinding Command="cmd:Commands.MoveGridDown1" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
-        <CommandBinding Command="cmd:Commands.MoveGridDown10" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
-        <CommandBinding Command="cmd:Commands.MoveGridLeft1" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
-        <CommandBinding Command="cmd:Commands.MoveGridLeft10" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
-        <CommandBinding Command="cmd:Commands.MoveGridRight1" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
-        <CommandBinding Command="cmd:Commands.MoveGridRight10" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridUp1" Executed="MoveGrid_Executed"
+                        CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridUp10" Executed="MoveGrid_Executed"
+                        CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridDown1" Executed="MoveGrid_Executed"
+                        CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridDown10" Executed="MoveGrid_Executed"
+                        CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridLeft1" Executed="MoveGrid_Executed"
+                        CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridLeft10" Executed="MoveGrid_Executed"
+                        CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridRight1" Executed="MoveGrid_Executed"
+                        CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridRight10" Executed="MoveGrid_Executed"
+                        CanExecute="MoveGrid_CanExecute" />
         <CommandBinding Command="cmd:Commands.ResetGrid" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
     </Window.CommandBindings>
 
@@ -40,12 +48,12 @@
                 <MenuItem Header="Reset" Command="cmd:Commands.ResetGrid" />
             </MenuItem>
         </Menu>
-        <ScrollViewer Focusable="False"
+        <ScrollViewer Name="ScrollViewer" Focusable="False"
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
-            <Grid>
+            <Grid Name="Grid">
                 <controls:BitmapViewer x:Name="BitmapViewer" />
-                <controls:GridViewer x:Name="GridViewer" />
+                <controls:GridViewer x:Name="GridViewer" MouseLeftButtonDown="GridViewer_MouseLeftButtonDown" />
             </Grid>
         </ScrollViewer>
     </DockPanel>

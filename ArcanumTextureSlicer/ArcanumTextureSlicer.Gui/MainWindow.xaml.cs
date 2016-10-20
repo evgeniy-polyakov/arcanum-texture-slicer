@@ -119,5 +119,17 @@ namespace ArcanumTextureSlicer.Gui
             }
             GridViewer.UpdateGrid();
         }
+
+        private void GridViewer_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_bitmap != null && (Keyboard.Modifiers & ModifierKeys.Control) > 0)
+            {
+                var p = Mouse.GetPosition(GridViewer);
+                var scale = _bitmap.Width/GridViewer.ActualWidth;
+                p.X *= scale;
+                p.Y *= scale;
+                GridViewer.SelectTileAt((int) p.X, (int) p.Y);
+            }
+        }
     }
 }
