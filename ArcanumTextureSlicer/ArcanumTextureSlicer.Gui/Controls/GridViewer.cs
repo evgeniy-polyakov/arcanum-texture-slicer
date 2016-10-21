@@ -65,18 +65,22 @@ namespace ArcanumTextureSlicer.Gui.Controls
 
         public void DisplayGrid(Bitmap bitmap)
         {
+            _offsetX = 0;
+            _offsetY = 0;
+
             _width = bitmap.Width;
             _height = bitmap.Height;
 
             _pixels = new uint[bitmap.Width*bitmap.Height];
             _stride = ((bitmap.Width*32 + 31) & ~31)/8;
 
-            _tiles = bitmap
-                .ToTiles(0,0)//-GridTileWidth, -GridTileHeight)
+            _tiles = Tile.Split(
+                _width + GridTileWidth,
+                _height + GridTileHeight)
                 .Select(t => new GridTile
                 {
-                    X = t.X,// + GridTileWidth,
-                    Y = t.Y,// + GridTileHeight,
+                    X = t.X,
+                    Y = t.Y,
                     Row = t.Row,
                     Column = t.Column
                 })
@@ -87,10 +91,13 @@ namespace ArcanumTextureSlicer.Gui.Controls
 
         public void UpdateGrid()
         {
+            CropSelectedTiles();
+
             for (var i = 0; i < _pixels.Length; i++)
             {
                 _pixels[i] = ColorTransparent;
             }
+
             foreach (var tile in _tiles)
             {
                 if (tile.Selected)
@@ -107,14 +114,6 @@ namespace ArcanumTextureSlicer.Gui.Controls
                             }
                         }
                     }
-                    {
-                        var x = tile.X + OffsetX;
-                        var y = tile.Y + OffsetY;
-                        if (x >= 0 && x < _width && y >= 0 && y < _height)
-                        {
-                            _pixels[y*_width + x] = ColorGrid;
-                        }
-                    }
                 }
                 foreach (var point in Tile.Outline)
                 {
@@ -125,7 +124,16 @@ namespace ArcanumTextureSlicer.Gui.Controls
                         _pixels[y*_width + x] = ColorGrid;
                     }
                 }
+                {
+                    var x = tile.X + OffsetX;
+                    var y = tile.Y + OffsetY;
+                    if (x >= 0 && x < _width && y >= 0 && y < _height)
+                    {
+                        _pixels[y*_width + x] = ColorGrid;
+                    }
+                }
             }
+
             Source = BitmapSource.Create(
                 _width, _height, 96, 96,
                 PixelFormats.Bgra32, null, _pixels, _stride);
@@ -162,7 +170,10 @@ namespace ArcanumTextureSlicer.Gui.Controls
                 .Where(t => t != null)
                 .ToList()
                 .ForEach(t => t.Selected = true);
+        }
 
+        private void CropSelectedTiles()
+        {
             _tiles.Where(t =>
                 t.X + Tile.HalfWidth + OffsetX < 0 ||
                 t.X - Tile.HalfWidth + OffsetX >= _width ||
