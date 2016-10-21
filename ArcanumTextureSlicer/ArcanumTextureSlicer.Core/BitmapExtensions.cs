@@ -231,5 +231,14 @@ namespace ArcanumTextureSlicer.Core
                     Y = t.Y + initTileY
                 });
         }
+
+        public static Color ToColor(this uint value)
+        {
+            return Color.FromArgb(
+                (byte) ((value >> 24) & 0xFF),
+                (byte) ((value >> 16) & 0xFF),
+                (byte) ((value >> 8) & 0xFF),
+                (byte) (value & 0xFF));
+        }
     }
 }

@@ -1,10 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Text;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using ArcanumTextureSlicer.Core;
+using FontFamily = System.Drawing.FontFamily;
 using Image = System.Windows.Controls.Image;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace ArcanumTextureSlicer.Gui.Controls
 {
@@ -15,6 +19,10 @@ namespace ArcanumTextureSlicer.Gui.Controls
         private const uint ColorTransparent = 0x00000000;
         private const uint ColorSelection = 0x6600ff00;
         private const uint ColorGrid = 0xcc00ff00;
+        private const uint ColorNumber = 0xcc00ff00;
+        private const int SizeNumber = 10;
+
+        private readonly IList<uint[,]> _numberPixels = new List<uint[,]>();
 
         private int _height;
         private int _offsetX;
@@ -23,7 +31,6 @@ namespace ArcanumTextureSlicer.Gui.Controls
         private int _stride;
         private IList<GridTile> _tiles;
         private int _width;
-
 
         public int OffsetX
         {
@@ -98,39 +105,29 @@ namespace ArcanumTextureSlicer.Gui.Controls
                 _pixels[i] = ColorTransparent;
             }
 
+            var n = 0;
             foreach (var tile in _tiles)
             {
+                {
+                    DrawNumber(tile.X + OffsetX, tile.Y + OffsetY, n++);
+                }
                 if (tile.Selected)
                 {
                     for (var r = 0; r < Tile.Rows.Length; r++)
                     {
                         for (var p = 0; p < Tile.Rows[r]; p++)
                         {
-                            var x = tile.X + OffsetX - Tile.Rows[r]/2 + p;
-                            var y = tile.Y + OffsetY - Tile.HalfHeight + r;
-                            if (x >= 0 && x < _width && y >= 0 && y < _height)
-                            {
-                                _pixels[y*_width + x] = ColorSelection;
-                            }
+                            SetPixel(ColorSelection,
+                                tile.X + OffsetX - Tile.Rows[r]/2 + p,
+                                tile.Y + OffsetY - Tile.HalfHeight + r);
                         }
                     }
                 }
                 foreach (var point in Tile.Outline)
                 {
-                    var x = tile.X + point.X + OffsetX;
-                    var y = tile.Y + point.Y + OffsetY;
-                    if (x >= 0 && x < _width && y >= 0 && y < _height)
-                    {
-                        _pixels[y*_width + x] = ColorGrid;
-                    }
-                }
-                {
-                    var x = tile.X + OffsetX;
-                    var y = tile.Y + OffsetY;
-                    if (x >= 0 && x < _width && y >= 0 && y < _height)
-                    {
-                        _pixels[y*_width + x] = ColorGrid;
-                    }
+                    SetPixel(ColorGrid,
+                        tile.X + point.X + OffsetX,
+                        tile.Y + point.Y + OffsetY);
                 }
             }
 
@@ -181,6 +178,63 @@ namespace ArcanumTextureSlicer.Gui.Controls
                 t.Y - Tile.HalfHeight + OffsetY >= _height)
                 .ToList()
                 .ForEach(t => t.Selected = false);
+        }
+
+        private void DrawNumber(int centerX, int centerY, int number)
+        {
+            while (_numberPixels.Count <= number)
+            {
+                _numberPixels.Add(NumberToPixels(_numberPixels.Count));
+            }
+            var pixels = _numberPixels[number];
+            var n0 = pixels.GetLength(0);
+            var n1 = pixels.GetLength(1);
+            for (var ty = 0; ty < n0; ty++)
+            {
+                for (var tx = 0; tx < n1; tx++)
+                {
+                    SetPixel(pixels[ty, tx],
+                        centerX + tx - n1/2,
+                        centerY + ty - n0/2);
+                }
+            }
+        }
+
+        private uint[,] NumberToPixels(int n)
+        {
+            var s = n.ToString("D");
+            using (var bitmap = new Bitmap(2*SizeNumber*s.Length, 2*SizeNumber, PixelFormat.Format32bppArgb))
+            {
+                using (var graphics = Graphics.FromImage(bitmap))
+                {
+                    using (var font = new Font(FontFamily.GenericSansSerif, SizeNumber, GraphicsUnit.Pixel))
+                    {
+                        graphics.SmoothingMode = SmoothingMode.None;
+                        graphics.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
+
+                        var size = Size.Ceiling(graphics.MeasureString(s, font));
+                        graphics.DrawString(s, font, new SolidBrush(ColorNumber.ToColor()), 0, 0);
+
+                        var pixels = new uint[size.Height, size.Width];
+                        for (var y = 0; y < size.Height; y++)
+                        {
+                            for (var x = 0; x < size.Width; x++)
+                            {
+                                pixels[y, x] = (uint) bitmap.GetPixel(x, y).ToArgb();
+                            }
+                        }
+                        return pixels;
+                    }
+                }
+            }
+        }
+
+        private void SetPixel(uint color, int x, int y)
+        {
+            if (x >= 0 && x < _width && y >= 0 && y < _height)
+            {
+                _pixels[y*_width + x] = color;
+            }
         }
     }
 

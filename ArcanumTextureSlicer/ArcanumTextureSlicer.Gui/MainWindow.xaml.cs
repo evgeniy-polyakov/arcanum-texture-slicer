@@ -85,12 +85,14 @@ namespace ArcanumTextureSlicer.Gui
             try
             {
                 BitmapViewer.DisplayBitmap(_bitmap);
-                GridViewer.DisplayGrid(_bitmap);
+                
             }
             catch (Exception e)
             {
                 ShowError(e);
             }
+
+            GridViewer.DisplayGrid(_bitmap);
         }
 
         private void ShowError(Exception e)
