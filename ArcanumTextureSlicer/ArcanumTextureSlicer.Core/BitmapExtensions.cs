@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace ArcanumTextureSlicer.Core
@@ -221,28 +222,14 @@ namespace ArcanumTextureSlicer.Core
 
         public static IEnumerable<Tile> ToTiles(this Bitmap bitmap, int initTileX, int initTileY)
         {
-            var n = Math.Ceiling((double) (bitmap.Width - initTileX)/(Tile.Width + Tile.XSpace)) + 1;
-            var m = Math.Ceiling((double) (bitmap.Height - initTileY)/Tile.Height)*2 + 2;
-            for (var j = 0; j < m; j++)
-            {
-                for (var i = 0; i < n; i++)
+            return Tile.Split(bitmap.Width - initTileX, bitmap.Height - initTileY)
+                .Select(t => new Tile
                 {
-                    var evenRow = j%2;
-                    var oddRow = 1 - evenRow;
-
-                    var tileX = initTileX + i*Tile.Width - Tile.HalfWidth*oddRow + i*Tile.XSpace +
-                                Tile.HalfXSpace*evenRow;
-                    var tileY = initTileY + j*Tile.HalfHeight - Tile.HalfHeight;
-
-                    yield return new Tile
-                    {
-                        Row = j,
-                        Column = i,
-                        X = tileX,
-                        Y = tileY
-                    };
-                }
-            }
+                    Row = t.Row,
+                    Column = t.Column,
+                    X = t.X + initTileX,
+                    Y = t.Y + initTileY
+                });
         }
     }
 }

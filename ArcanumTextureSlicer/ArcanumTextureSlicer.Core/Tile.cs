@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
 
 namespace ArcanumTextureSlicer.Core
 {
@@ -52,6 +54,31 @@ namespace ArcanumTextureSlicer.Core
             return y >= -HalfHeight && y < HalfHeight
                    && x >= -Rows[y + HalfHeight]/2
                    && x < Rows[y + HalfHeight]/2;
+        }
+
+        public static IEnumerable<Tile> Split(int width, int height)
+        {
+            var rows = Math.Ceiling((decimal) height/Height)*2 + 1;
+            var columns = Math.Ceiling((decimal) width/(Width + XSpace)) + 1;
+            for (var row = 0; row < rows; row++)
+            {
+                var evenRow = row%2;
+                for (var column = 0; column < columns; column++)
+                {
+                    var lastColumn = column == columns - 1;
+                    if (lastColumn && evenRow > 0)
+                    {
+                        continue;
+                    }
+                    yield return new Tile
+                    {
+                        Row = row,
+                        Column = column,
+                        X = (Width + XSpace)*column + (HalfWidth + HalfXSpace)*evenRow,
+                        Y = row*HalfHeight
+                    };
+                }
+            }
         }
 
         public int Row;
