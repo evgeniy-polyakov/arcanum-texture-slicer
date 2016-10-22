@@ -70,7 +70,7 @@ namespace ArcanumTextureSlicer.Gui.Controls
             }
         }
 
-        public void DisplayGrid(Bitmap bitmap)
+        public void CreateGrid(Bitmap bitmap)
         {
             _offsetX = 0;
             _offsetY = 0;
@@ -99,18 +99,15 @@ namespace ArcanumTextureSlicer.Gui.Controls
         public void UpdateGrid()
         {
             CropSelectedTiles();
+            UpdateSelectedIndices();
 
             for (var i = 0; i < _pixels.Length; i++)
             {
                 _pixels[i] = ColorTransparent;
             }
 
-            var n = 0;
             foreach (var tile in _tiles)
             {
-                {
-                    DrawNumber(tile.X + OffsetX, tile.Y + OffsetY, n++);
-                }
                 if (tile.Selected)
                 {
                     for (var r = 0; r < Tile.Rows.Length; r++)
@@ -122,6 +119,8 @@ namespace ArcanumTextureSlicer.Gui.Controls
                                 tile.Y + OffsetY - Tile.HalfHeight + r);
                         }
                     }
+
+                    DrawNumber(tile.X + OffsetX, tile.Y + OffsetY, tile.SelectedIndex);
                 }
                 foreach (var point in Tile.Outline)
                 {
@@ -151,9 +150,22 @@ namespace ArcanumTextureSlicer.Gui.Controls
                 if (Tile.HitTest(x - tile.X - OffsetX, y - tile.Y - OffsetY))
                 {
                     tile.Selected = !tile.Selected;
+                    if (tile.Selected)
+                    {
+                        tile.SelectedIndex = int.MaxValue;
+                    }
                     UpdateGrid();
                     break;
                 }
+            }
+        }
+
+        private void UpdateSelectedIndices()
+        {
+            var selectedTiles = _tiles.Where(t => t.Selected).OrderBy(t => t.SelectedIndex).ToList();
+            for (var i = 0; i < selectedTiles.Count; i++)
+            {
+                selectedTiles[i].SelectedIndex = i + 1;
             }
         }
 
@@ -162,11 +174,15 @@ namespace ArcanumTextureSlicer.Gui.Controls
             var selectedTiles = _tiles.Where(t => t.Selected).ToList();
             selectedTiles.ForEach(t => t.Selected = false);
 
-            selectedTiles.Select(t => _tiles.FirstOrDefault(
-                t1 => t1.Column == t.Column + column && t1.Row == t.Row + row*2))
-                .Where(t => t != null)
-                .ToList()
-                .ForEach(t => t.Selected = true);
+            foreach (var tile in selectedTiles)
+            {
+                var newTile = _tiles.FirstOrDefault(t => t.Column == tile.Column + column && t.Row == tile.Row + row*2);
+                if (newTile != null)
+                {
+                    newTile.Selected = true;
+                    newTile.SelectedIndex = tile.SelectedIndex;
+                }
+            }
         }
 
         private void CropSelectedTiles()
@@ -193,9 +209,12 @@ namespace ArcanumTextureSlicer.Gui.Controls
             {
                 for (var tx = 0; tx < n1; tx++)
                 {
-                    SetPixel(pixels[ty, tx],
-                        centerX + tx - n1/2,
-                        centerY + ty - n0/2);
+                    if (pixels[ty, tx] > 0)
+                    {
+                        SetPixel(pixels[ty, tx],
+                            centerX + tx - n1/2,
+                            centerY + ty - n0/2);
+                    }
                 }
             }
         }
@@ -243,6 +262,7 @@ namespace ArcanumTextureSlicer.Gui.Controls
         public int Column;
         public int Row;
         public bool Selected;
+        public int SelectedIndex;
         public int X;
         public int Y;
     }

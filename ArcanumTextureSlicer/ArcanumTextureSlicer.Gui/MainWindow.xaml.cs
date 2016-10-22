@@ -92,7 +92,7 @@ namespace ArcanumTextureSlicer.Gui
                 ShowError(e);
             }
 
-            GridViewer.DisplayGrid(_bitmap);
+            GridViewer.CreateGrid(_bitmap);
         }
 
         private void ShowError(Exception e)
