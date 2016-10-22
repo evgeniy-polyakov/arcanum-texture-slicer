@@ -19,8 +19,8 @@ namespace ArcanumTextureSlicer.Gui.Controls
         private const uint ColorTransparent = 0x00000000;
         private const uint ColorSelection = 0x6600ff00;
         private const uint ColorGrid = 0xcc00ff00;
-        private const uint ColorNumber = 0xcc00ff00;
-        private const int SizeNumber = 10;
+        private const uint ColorNumber = 0xff00ff00;
+        private const int SizeNumber = 12;
 
         private readonly IList<uint[,]> _numberPixels = new List<uint[,]>();
 
@@ -171,16 +171,17 @@ namespace ArcanumTextureSlicer.Gui.Controls
 
         private void ShiftSelectedTiles(int column, int row)
         {
-            var selectedTiles = _tiles.Where(t => t.Selected).ToList();
+            var selectedTiles = _tiles.Where(t => t.Selected).OrderBy(t => t.SelectedIndex).ToList();
             selectedTiles.ForEach(t => t.Selected = false);
 
+            var i = 0;
             foreach (var tile in selectedTiles)
             {
                 var newTile = _tiles.FirstOrDefault(t => t.Column == tile.Column + column && t.Row == tile.Row + row*2);
                 if (newTile != null)
                 {
                     newTile.Selected = true;
-                    newTile.SelectedIndex = tile.SelectedIndex;
+                    newTile.SelectedIndex = ++i;
                 }
             }
         }
@@ -226,7 +227,8 @@ namespace ArcanumTextureSlicer.Gui.Controls
             {
                 using (var graphics = Graphics.FromImage(bitmap))
                 {
-                    using (var font = new Font(FontFamily.GenericSansSerif, SizeNumber, GraphicsUnit.Pixel))
+                    using (var font = new Font(
+                        FontFamily.GenericSansSerif, SizeNumber, FontStyle.Bold, GraphicsUnit.Pixel))
                     {
                         graphics.SmoothingMode = SmoothingMode.None;
                         graphics.TextRenderingHint = TextRenderingHint.SingleBitPerPixelGridFit;
