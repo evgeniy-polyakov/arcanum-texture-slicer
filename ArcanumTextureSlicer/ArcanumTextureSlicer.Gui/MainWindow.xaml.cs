@@ -25,6 +25,15 @@ namespace ArcanumTextureSlicer.Gui
             RenderOptions.SetBitmapScalingMode(GridViewer, BitmapScalingMode.NearestNeighbor);
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            var args = Environment.GetCommandLineArgs();
+            if (args.Length > 1)
+            {
+                OpenFile(args[1]);
+            }
+        }
+
         private void Open_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = true;
@@ -40,13 +49,18 @@ namespace ArcanumTextureSlicer.Gui
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                var bitmap = CreateBitmap(openFileDialog.FileName);
-                if (bitmap != null)
-                {
-                    DestroyBitmap();
-                    _bitmap = bitmap;
-                    DisplayBitmap();
-                }
+                OpenFile(openFileDialog.FileName);
+            }
+        }
+
+        private void OpenFile(string file)
+        {
+            var bitmap = CreateBitmap(file);
+            if (bitmap != null)
+            {
+                DestroyBitmap();
+                _bitmap = bitmap;
+                DisplayBitmap();
             }
         }
 
@@ -85,7 +99,6 @@ namespace ArcanumTextureSlicer.Gui
             try
             {
                 BitmapViewer.DisplayBitmap(_bitmap);
-                
             }
             catch (Exception e)
             {
