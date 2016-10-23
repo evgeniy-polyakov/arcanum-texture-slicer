@@ -154,7 +154,6 @@ namespace ArcanumTextureSlicer.Gui.Controls
                     {
                         tile.SelectedIndex = int.MaxValue;
                     }
-                    UpdateGrid();
                     break;
                 }
             }

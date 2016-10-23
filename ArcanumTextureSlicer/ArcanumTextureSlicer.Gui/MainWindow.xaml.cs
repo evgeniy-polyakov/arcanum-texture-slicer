@@ -133,6 +133,7 @@ namespace ArcanumTextureSlicer.Gui
             {
                 GridViewer.OffsetX = 0;
                 GridViewer.OffsetY = 0;
+                GridViewer.ClearSelection();
             }
             GridViewer.UpdateGrid();
         }
@@ -146,6 +147,7 @@ namespace ArcanumTextureSlicer.Gui
                 p.X *= scale;
                 p.Y *= scale;
                 GridViewer.SelectTileAt((int) p.X, (int) p.Y);
+                GridViewer.UpdateGrid();
             }
         }
 
