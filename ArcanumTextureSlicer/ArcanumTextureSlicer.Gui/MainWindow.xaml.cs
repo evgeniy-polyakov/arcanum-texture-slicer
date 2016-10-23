@@ -16,6 +16,7 @@ namespace ArcanumTextureSlicer.Gui
     public partial class MainWindow : Window
     {
         private Bitmap _bitmap;
+        private double _scale = 1.0;
 
         public MainWindow()
         {
@@ -98,14 +99,15 @@ namespace ArcanumTextureSlicer.Gui
         {
             try
             {
+                _scale = 1.0;
+                UpdateScale();
                 BitmapViewer.DisplayBitmap(_bitmap);
+                GridViewer.CreateGrid(_bitmap);
             }
             catch (Exception e)
             {
                 ShowError(e);
             }
-
-            GridViewer.CreateGrid(_bitmap);
         }
 
         private void ShowError(Exception e)
@@ -145,6 +147,23 @@ namespace ArcanumTextureSlicer.Gui
                 p.Y *= scale;
                 GridViewer.SelectTileAt((int) p.X, (int) p.Y);
             }
+        }
+
+        private void ScrollContent_OnMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (_bitmap != null && (Keyboard.Modifiers & ModifierKeys.Control) > 0)
+            {
+                _scale += 0.001*e.Delta;
+                UpdateScale();
+                e.Handled = true;
+            }
+        }
+
+        private void UpdateScale()
+        {
+            _scale = Math.Max(0.1, _scale);
+            _scale = Math.Min(10, _scale);
+            ScrollContent.LayoutTransform = new ScaleTransform(_scale, _scale);
         }
     }
 }
