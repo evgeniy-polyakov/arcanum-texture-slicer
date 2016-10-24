@@ -65,6 +65,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Commands\Commands.cs" />
+    <Compile Include="Commands\ExportCommand.cs" />
     <Compile Include="Commands\MoveGridCommand.cs" />
     <Compile Include="Commands\ZoomCommand.cs" />
     <Compile Include="Commands\ResetGridCommand.cs" />

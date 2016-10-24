@@ -12,36 +12,37 @@
 
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Open" Executed="Open_Executed" CanExecute="Open_CanExecute" />
-        <CommandBinding Command="ApplicationCommands.Close" Executed="Close_Executed" CanExecute="Close_CanExecute" />
+        <CommandBinding Command="ApplicationCommands.Close" Executed="Close_Executed" CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.Export" Executed="Export_Executed" CanExecute="FileOpen_CanExecute" />
         <CommandBinding Command="cmd:Commands.MoveGridUp1" Executed="MoveGrid_Executed"
-                        CanExecute="MoveGrid_CanExecute" />
+                        CanExecute="FileOpen_CanExecute" />
         <CommandBinding Command="cmd:Commands.MoveGridUp10" Executed="MoveGrid_Executed"
-                        CanExecute="MoveGrid_CanExecute" />
+                        CanExecute="FileOpen_CanExecute" />
         <CommandBinding Command="cmd:Commands.MoveGridDown1" Executed="MoveGrid_Executed"
-                        CanExecute="MoveGrid_CanExecute" />
+                        CanExecute="FileOpen_CanExecute" />
         <CommandBinding Command="cmd:Commands.MoveGridDown10" Executed="MoveGrid_Executed"
-                        CanExecute="MoveGrid_CanExecute" />
+                        CanExecute="FileOpen_CanExecute" />
         <CommandBinding Command="cmd:Commands.MoveGridLeft1" Executed="MoveGrid_Executed"
-                        CanExecute="MoveGrid_CanExecute" />
+                        CanExecute="FileOpen_CanExecute" />
         <CommandBinding Command="cmd:Commands.MoveGridLeft10" Executed="MoveGrid_Executed"
-                        CanExecute="MoveGrid_CanExecute" />
+                        CanExecute="FileOpen_CanExecute" />
         <CommandBinding Command="cmd:Commands.MoveGridRight1" Executed="MoveGrid_Executed"
-                        CanExecute="MoveGrid_CanExecute" />
+                        CanExecute="FileOpen_CanExecute" />
         <CommandBinding Command="cmd:Commands.MoveGridRight10" Executed="MoveGrid_Executed"
-                        CanExecute="MoveGrid_CanExecute" />
-        <CommandBinding Command="cmd:Commands.ResetGrid" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
-        <CommandBinding Command="cmd:Commands.ZoomX1" Executed="Zoom_Executed" CanExecute="Zoom_CanExecute" />
-        <CommandBinding Command="cmd:Commands.ZoomX2" Executed="Zoom_Executed" CanExecute="Zoom_CanExecute" />
-        <CommandBinding Command="cmd:Commands.ZoomX3" Executed="Zoom_Executed" CanExecute="Zoom_CanExecute" />
-        <CommandBinding Command="cmd:Commands.ZoomX4" Executed="Zoom_Executed" CanExecute="Zoom_CanExecute" />
+                        CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ResetGrid" Executed="MoveGrid_Executed" CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ZoomX1" Executed="Zoom_Executed" CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ZoomX2" Executed="Zoom_Executed" CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ZoomX3" Executed="Zoom_Executed" CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ZoomX4" Executed="Zoom_Executed" CanExecute="FileOpen_CanExecute" />
     </Window.CommandBindings>
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem Header="Open..." Command="ApplicationCommands.Open" />
-                <MenuItem Header="Export..." />
-                <MenuItem Header="Close" Command="ApplicationCommands.Close"/>
+                <MenuItem Header="Export..." Command="cmd:Commands.Export" />
+                <MenuItem Header="Close" Command="ApplicationCommands.Close" />
             </MenuItem>
             <MenuItem Header="Grid">
                 <MenuItem Header="Move Up 1px" Command="cmd:Commands.MoveGridUp1" />

@@ -60,11 +60,6 @@ namespace ArcanumTextureSlicer.Gui
             }
         }
 
-        private void Close_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = IsFileOpen;
-        }
-
         private void Close_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             GridViewer.Source = null;
@@ -72,6 +67,16 @@ namespace ArcanumTextureSlicer.Gui
 
             DestroyBitmap();
             _bitmap = null;
+        }
+
+        private void FileOpen_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = IsFileOpen;
+        }
+
+        private void Export_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private void OpenFile(string file)
@@ -135,11 +140,6 @@ namespace ArcanumTextureSlicer.Gui
             MessageBox.Show(this, e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
         }
 
-        private void MoveGrid_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = IsFileOpen;
-        }
-
         private void MoveGrid_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var moveGridCommand = e.Command as MoveGridCommand;
@@ -169,11 +169,6 @@ namespace ArcanumTextureSlicer.Gui
                 GridViewer.SelectTileAt((int) p.X, (int) p.Y);
                 GridViewer.UpdateGrid();
             }
-        }
-
-        private void Zoom_CanExecute(object sender, CanExecuteRoutedEventArgs e)
-        {
-            e.CanExecute = IsFileOpen;
         }
 
         private void Zoom_Executed(object sender, ExecutedRoutedEventArgs e)

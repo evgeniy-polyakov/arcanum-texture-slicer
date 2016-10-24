@@ -4,6 +4,8 @@ namespace ArcanumTextureSlicer.Gui.Commands
 {
     public static class Commands
     {
+        public static readonly RoutedCommand Export = new ExportCommand();
+
         public static readonly RoutedCommand MoveGridUp1 = new MoveGridCommand(0, -1);
         public static readonly RoutedCommand MoveGridUp10 = new MoveGridCommand(0, -10);
 
