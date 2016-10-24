@@ -12,6 +12,7 @@
 
     <Window.CommandBindings>
         <CommandBinding Command="ApplicationCommands.Open" Executed="Open_Executed" CanExecute="Open_CanExecute" />
+        <CommandBinding Command="ApplicationCommands.Close" Executed="Close_Executed" CanExecute="Close_CanExecute" />
         <CommandBinding Command="cmd:Commands.MoveGridUp1" Executed="MoveGrid_Executed"
                         CanExecute="MoveGrid_CanExecute" />
         <CommandBinding Command="cmd:Commands.MoveGridUp10" Executed="MoveGrid_Executed"
@@ -40,6 +41,7 @@
             <MenuItem Header="File">
                 <MenuItem Header="Open..." Command="ApplicationCommands.Open" />
                 <MenuItem Header="Export..." />
+                <MenuItem Header="Close" Command="ApplicationCommands.Close"/>
             </MenuItem>
             <MenuItem Header="Grid">
                 <MenuItem Header="Move Up 1px" Command="cmd:Commands.MoveGridUp1" />

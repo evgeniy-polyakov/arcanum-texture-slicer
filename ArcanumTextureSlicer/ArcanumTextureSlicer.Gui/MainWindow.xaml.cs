@@ -29,6 +29,8 @@ namespace ArcanumTextureSlicer.Gui
             RenderOptions.SetBitmapScalingMode(GridViewer, BitmapScalingMode.NearestNeighbor);
         }
 
+        private bool IsFileOpen => _bitmap != null;
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             var args = Environment.GetCommandLineArgs();
@@ -43,6 +45,7 @@ namespace ArcanumTextureSlicer.Gui
             e.CanExecute = true;
         }
 
+
         private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
         {
             var openFileDialog = new OpenFileDialog
@@ -55,6 +58,20 @@ namespace ArcanumTextureSlicer.Gui
             {
                 OpenFile(openFileDialog.FileName);
             }
+        }
+
+        private void Close_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = IsFileOpen;
+        }
+
+        private void Close_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            GridViewer.Source = null;
+            BitmapViewer.Source = null;
+
+            DestroyBitmap();
+            _bitmap = null;
         }
 
         private void OpenFile(string file)
@@ -91,7 +108,7 @@ namespace ArcanumTextureSlicer.Gui
 
         private void DestroyBitmap()
         {
-            if (_bitmap != null)
+            if (IsFileOpen)
             {
                 BitmapViewer.Source = null;
                 _bitmap.Dispose();
@@ -120,7 +137,7 @@ namespace ArcanumTextureSlicer.Gui
 
         private void MoveGrid_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _bitmap != null;
+            e.CanExecute = IsFileOpen;
         }
 
         private void MoveGrid_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -143,7 +160,7 @@ namespace ArcanumTextureSlicer.Gui
 
         private void GridViewer_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (_bitmap != null && (Keyboard.Modifiers & ModifierKeys.Control) > 0)
+            if (IsFileOpen && (Keyboard.Modifiers & ModifierKeys.Control) > 0)
             {
                 var p = Mouse.GetPosition(GridViewer);
                 var scale = _bitmap.Width/GridViewer.ActualWidth;
@@ -156,7 +173,7 @@ namespace ArcanumTextureSlicer.Gui
 
         private void Zoom_CanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _bitmap != null;
+            e.CanExecute = IsFileOpen;
         }
 
         private void Zoom_Executed(object sender, ExecutedRoutedEventArgs e)
@@ -168,7 +185,7 @@ namespace ArcanumTextureSlicer.Gui
 
         private void ScrollContent_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (_bitmap != null && (Keyboard.Modifiers & ModifierKeys.Control) > 0)
+            if (IsFileOpen && (Keyboard.Modifiers & ModifierKeys.Control) > 0)
             {
                 _zoom += 0.001*e.Delta;
                 UpdateZoom();
@@ -200,7 +217,7 @@ namespace ArcanumTextureSlicer.Gui
 
         private void ScrollViewer_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            if (_bitmap != null && (Keyboard.Modifiers & ModifierKeys.Control) == 0)
+            if (IsFileOpen && (Keyboard.Modifiers & ModifierKeys.Control) == 0)
             {
                 _mousePosition = e.GetPosition(ScrollViewer);
                 _scrollOffset = new Point(ScrollViewer.HorizontalOffset, ScrollViewer.VerticalOffset);
