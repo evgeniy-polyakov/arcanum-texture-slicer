@@ -7,8 +7,8 @@
     <ProjectGuid>{8D83F596-37CF-4683-BA03-51596B348A40}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ArcanumTextureSlicer</RootNamespace>
-    <AssemblyName>ArcanumTextureSlicer</AssemblyName>
+    <RootNamespace>ArcanumTextureSlicer.Console</RootNamespace>
+    <AssemblyName>ArcanumTextureSlicer.Console</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -45,7 +45,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BitmapExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -55,7 +54,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\SampleTile.png" />
+    <ProjectReference Include="..\ArcanumTextureSlicer.Core\ArcanumTextureSlicer.Core.csproj">
+      <Project>{ecc9c8a1-77c5-4f4e-9e16-6d9f8d2fd8ca}</Project>
+      <Name>ArcanumTextureSlicer.Core</Name>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

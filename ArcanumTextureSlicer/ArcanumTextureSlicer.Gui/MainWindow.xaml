@@ -1,0 +1,80 @@
+﻿<Window x:Class="ArcanumTextureSlicer.Gui.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ArcanumTextureSlicer.Gui"
+        xmlns:cmd="clr-namespace:ArcanumTextureSlicer.Gui.Commands"
+        xmlns:controls="clr-namespace:ArcanumTextureSlicer.Gui.Controls"
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        Title="Arcanum Texture Slicer" Height="600" Width="800">
+
+    <Window.CommandBindings>
+        <CommandBinding Command="ApplicationCommands.Open" Executed="Open_Executed" CanExecute="Open_CanExecute" />
+        <CommandBinding Command="ApplicationCommands.Close" Executed="Close_Executed" CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.Export" Executed="Export_Executed" CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridUp1" Executed="MoveGrid_Executed"
+                        CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridUp10" Executed="MoveGrid_Executed"
+                        CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridDown1" Executed="MoveGrid_Executed"
+                        CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridDown10" Executed="MoveGrid_Executed"
+                        CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridLeft1" Executed="MoveGrid_Executed"
+                        CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridLeft10" Executed="MoveGrid_Executed"
+                        CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridRight1" Executed="MoveGrid_Executed"
+                        CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.MoveGridRight10" Executed="MoveGrid_Executed"
+                        CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ResetGrid" Executed="MoveGrid_Executed" CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ZoomX1" Executed="Zoom_Executed" CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ZoomX2" Executed="Zoom_Executed" CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ZoomX3" Executed="Zoom_Executed" CanExecute="FileOpen_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ZoomX4" Executed="Zoom_Executed" CanExecute="FileOpen_CanExecute" />
+    </Window.CommandBindings>
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Open..." Command="ApplicationCommands.Open" />
+                <MenuItem Header="Export..." Command="cmd:Commands.Export" />
+                <MenuItem Header="Close" Command="ApplicationCommands.Close" />
+            </MenuItem>
+            <MenuItem Header="Grid">
+                <MenuItem Header="Move Up 1px" Command="cmd:Commands.MoveGridUp1" />
+                <MenuItem Header="Move Up 10px" Command="cmd:Commands.MoveGridUp10" />
+                <MenuItem Header="Move Down 1px" Command="cmd:Commands.MoveGridDown1" />
+                <MenuItem Header="Move Down 10px" Command="cmd:Commands.MoveGridDown10" />
+                <MenuItem Header="Move Left 1px" Command="cmd:Commands.MoveGridLeft1" />
+                <MenuItem Header="Move Left 10px" Command="cmd:Commands.MoveGridLeft10" />
+                <MenuItem Header="Move Right 1px" Command="cmd:Commands.MoveGridRight1" />
+                <MenuItem Header="Move Right 10px" Command="cmd:Commands.MoveGridRight10" />
+                <MenuItem Header="Reset" Command="cmd:Commands.ResetGrid" />
+            </MenuItem>
+            <MenuItem Header="Zoom">
+                <MenuItem Header="Zoom x1" Command="cmd:Commands.ZoomX1" />
+                <MenuItem Header="Zoom x2" Command="cmd:Commands.ZoomX2" />
+                <MenuItem Header="Zoom x3" Command="cmd:Commands.ZoomX3" />
+                <MenuItem Header="Zoom x4" Command="cmd:Commands.ZoomX4" />
+            </MenuItem>
+        </Menu>
+        <ScrollViewer Name="ScrollViewer"
+                      Focusable="False"
+                      HorizontalScrollBarVisibility="Auto"
+                      VerticalScrollBarVisibility="Auto"
+                      MouseLeftButtonDown="ScrollViewer_MouseLeftButtonDown"
+                      MouseMove="ScrollViewer_OnMouseMove"
+                      MouseLeftButtonUp="ScrollViewer_OnMouseLeftButtonUp">
+            <Grid Name="ScrollContent" MouseWheel="ScrollContent_MouseWheel">
+                <controls:BitmapViewer x:Name="BitmapViewer" Stretch="None" />
+                <controls:GridViewer x:Name="GridViewer" Stretch="None"
+                                     MouseLeftButtonDown="GridViewer_MouseLeftButtonDown" />
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
+
+</Window>
