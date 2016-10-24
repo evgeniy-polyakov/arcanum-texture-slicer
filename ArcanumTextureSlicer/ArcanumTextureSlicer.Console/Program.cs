@@ -57,7 +57,7 @@ namespace ArcanumTextureSlicer.Console
                                 try
                                 {
                                     var tilePath =
-                                        $"{outputFolder.TrimEnd('/', '\\')}\\tile_{LeadingZero(tile.Row)}_{LeadingZero(tile.Column)}.bmp";
+                                        $"{outputFolder.TrimEnd('/', '\\')}\\tile_{tile.Row.ToString("D3")}_{tile.Column.ToString("D3")}.bmp";
                                     System.Console.WriteLine(tilePath);
                                     outputBitmap.Save(tilePath, ImageFormat.Bmp);
                                 }
@@ -74,15 +74,6 @@ namespace ArcanumTextureSlicer.Console
             {
                 System.Console.WriteLine(e);
             }
-        }
-
-        private static string LeadingZero(int i)
-        {
-            return i < 100
-                ? i < 10
-                    ? $"00{i}"
-                    : $"0{i}"
-                : $"{i}";
         }
     }
 }

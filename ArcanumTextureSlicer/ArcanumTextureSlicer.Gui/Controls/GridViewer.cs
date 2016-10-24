@@ -32,6 +32,17 @@ namespace ArcanumTextureSlicer.Gui.Controls
         private IList<GridTile> _tiles;
         private int _width;
 
+        public IEnumerable<Tile> SelectedTiles => _tiles
+            .Where(t => t.Selected)
+            .OrderBy(t => t.SelectedIndex)
+            .Select(t => new Tile
+            {
+                Row = t.Row,
+                Column = t.Column,
+                X = t.X + OffsetX,
+                Y = t.Y + OffsetY
+            });
+
         public int OffsetX
         {
             get { return _offsetX; }

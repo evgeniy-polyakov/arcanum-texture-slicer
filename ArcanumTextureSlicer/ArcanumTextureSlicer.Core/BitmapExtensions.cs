@@ -68,7 +68,8 @@ namespace ArcanumTextureSlicer.Core
 
         public static Bitmap CreateTile(this Bitmap source, int x, int y)
         {
-            var tile = CloneRegion(source, new Rectangle(x, y, Tile.Width, Tile.Height));
+            var tile = CloneRegion(source,
+                new Rectangle(x - Tile.HalfWidth, y - Tile.HalfHeight, Tile.Width, Tile.Height));
             tile.DrawAlpha();
             return tile;
         }
@@ -126,7 +127,7 @@ namespace ArcanumTextureSlicer.Core
                 {
                     for (var x = 0; x < Tile.Width; x++)
                     {
-                        if (!Tile.HitTest(x, y))
+                        if (!Tile.HitTest(x - Tile.HalfWidth, y - Tile.HalfHeight))
                         {
                             canvasBytes[x + y*data.Stride] = 0;
                         }

@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
+using System.Linq;
 using System.Windows;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
+using ArcanumTextureSlicer.Core;
 using ArcanumTextureSlicer.Gui.Commands;
-using Microsoft.Win32;
+using MessageBox = System.Windows.MessageBox;
+using MouseEventArgs = System.Windows.Input.MouseEventArgs;
+using OpenFileDialog = Microsoft.Win32.OpenFileDialog;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 using Point = System.Windows.Point;
 
@@ -17,6 +23,7 @@ namespace ArcanumTextureSlicer.Gui
     public partial class MainWindow : Window
     {
         private Bitmap _bitmap;
+        private string _lastExportPath;
         private Point _mousePosition;
         private Point _scrollOffset;
         private double _zoom = 1.0;
@@ -45,18 +52,17 @@ namespace ArcanumTextureSlicer.Gui
             e.CanExecute = true;
         }
 
-
         private void Open_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            var openFileDialog = new OpenFileDialog
+            var dialog = new OpenFileDialog
             {
                 Multiselect = false,
                 ShowReadOnly = true,
                 Filter = "Bitmap Images (*.bmp)|*.bmp|All Files (*.*)|*.*"
             };
-            if (openFileDialog.ShowDialog() == true)
+            if (dialog.ShowDialog() == true)
             {
-                OpenFile(openFileDialog.FileName);
+                OpenFile(dialog.FileName);
             }
         }
 
@@ -76,11 +82,37 @@ namespace ArcanumTextureSlicer.Gui
 
         private void Export_Executed(object sender, ExecutedRoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            var dialog = new FolderBrowserDialog
+            {
+                SelectedPath = _lastExportPath
+            };
+            if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                _lastExportPath = dialog.SelectedPath;
+                Directory.GetFiles(_lastExportPath, "tile_???.bmp").ToList().ForEach(File.Delete);
+                var i = 1;
+                foreach (var tile in GridViewer.SelectedTiles)
+                {
+                    using (var output = _bitmap.CreateTile(tile.X, tile.Y))
+                    {
+                        try
+                        {
+                            var tilePath = $"{_lastExportPath.TrimEnd('/', '\\')}\\tile_{i.ToString("D3")}.bmp";
+                            output.Save(tilePath, ImageFormat.Bmp);
+                        }
+                        catch (Exception exception)
+                        {
+                            ShowError(exception);
+                        }
+                        i++;
+                    }
+                }
+            }
         }
 
         private void OpenFile(string file)
         {
+            _lastExportPath = new FileInfo(file).DirectoryName;
             var bitmap = CreateBitmap(file);
             if (bitmap != null)
             {
