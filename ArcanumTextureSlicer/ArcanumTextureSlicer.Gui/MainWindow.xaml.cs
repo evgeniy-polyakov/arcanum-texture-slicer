@@ -7,6 +7,7 @@ using System.Windows.Media;
 using ArcanumTextureSlicer.Gui.Commands;
 using Microsoft.Win32;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
+using Point = System.Windows.Point;
 
 namespace ArcanumTextureSlicer.Gui
 {
@@ -16,7 +17,9 @@ namespace ArcanumTextureSlicer.Gui
     public partial class MainWindow : Window
     {
         private Bitmap _bitmap;
+        private Point _mousePosition;
         private double _scale = 1.0;
+        private Point _scrollOffset;
 
         public MainWindow()
         {
@@ -180,6 +183,34 @@ namespace ArcanumTextureSlicer.Gui
             else
             {
                 ScrollContent.LayoutTransform = new ScaleTransform(_scale, _scale);
+            }
+        }
+
+        private void ScrollViewer_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (_bitmap != null && (Keyboard.Modifiers & ModifierKeys.Control) == 0)
+            {
+                _mousePosition = e.GetPosition(ScrollViewer);
+                _scrollOffset = new Point(ScrollViewer.HorizontalOffset, ScrollViewer.VerticalOffset);
+                ScrollViewer.CaptureMouse();
+            }
+        }
+
+        private void ScrollViewer_OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (ScrollViewer.IsMouseCaptured)
+            {
+                var p = e.GetPosition(ScrollViewer);
+                ScrollViewer.ScrollToVerticalOffset(_scrollOffset.Y + _mousePosition.Y - p.Y);
+                ScrollViewer.ScrollToHorizontalOffset(_scrollOffset.X + _mousePosition.X - p.X);
+            }
+        }
+
+        private void ScrollViewer_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (ScrollViewer.IsMouseCaptured)
+            {
+                ScrollViewer.ReleaseMouseCapture();
             }
         }
     }

@@ -52,7 +52,10 @@
         <ScrollViewer Name="ScrollViewer"
                       Focusable="False"
                       HorizontalScrollBarVisibility="Auto"
-                      VerticalScrollBarVisibility="Auto">
+                      VerticalScrollBarVisibility="Auto"
+                      MouseLeftButtonDown="ScrollViewer_MouseLeftButtonDown"
+                      MouseMove="ScrollViewer_OnMouseMove"
+                      MouseLeftButtonUp="ScrollViewer_OnMouseLeftButtonUp">
             <Grid Name="ScrollContent" MouseWheel="ScrollContent_OnMouseWheel">
                 <controls:BitmapViewer x:Name="BitmapViewer" Stretch="None"/>
                 <controls:GridViewer x:Name="GridViewer" Stretch="None" MouseLeftButtonDown="GridViewer_MouseLeftButtonDown" />
