@@ -18,8 +18,8 @@ namespace ArcanumTextureSlicer.Gui
     {
         private Bitmap _bitmap;
         private Point _mousePosition;
-        private double _scale = 1.0;
         private Point _scrollOffset;
+        private double _zoom = 1.0;
 
         public MainWindow()
         {
@@ -102,8 +102,8 @@ namespace ArcanumTextureSlicer.Gui
         {
             try
             {
-                _scale = 1.0;
-                UpdateScale();
+                _zoom = 1.0;
+                UpdateZoom();
                 BitmapViewer.DisplayBitmap(_bitmap);
                 GridViewer.CreateGrid(_bitmap);
             }
@@ -154,27 +154,39 @@ namespace ArcanumTextureSlicer.Gui
             }
         }
 
-        private void ScrollContent_OnMouseWheel(object sender, MouseWheelEventArgs e)
+        private void Zoom_CanExecute(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = _bitmap != null;
+        }
+
+        private void Zoom_Executed(object sender, ExecutedRoutedEventArgs e)
+        {
+            var zoomCommnand = (ZoomCommand) e.Command;
+            _zoom = zoomCommnand.Zoom;
+            UpdateZoom();
+        }
+
+        private void ScrollContent_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (_bitmap != null && (Keyboard.Modifiers & ModifierKeys.Control) > 0)
             {
-                _scale += 0.001*e.Delta;
-                UpdateScale();
+                _zoom += 0.001*e.Delta;
+                UpdateZoom();
                 e.Handled = true;
             }
         }
 
-        private void UpdateScale()
+        private void UpdateZoom()
         {
-            _scale = Math.Max(1, _scale);
-            _scale = Math.Min(10, _scale);
+            _zoom = Math.Max(1, _zoom);
+            _zoom = Math.Min(4, _zoom);
 
             if (ScrollViewer.ScrollableHeight > 0 && ScrollViewer.ScrollableWidth > 0)
             {
                 var verticalScrollPosition = ScrollViewer.VerticalOffset/ScrollViewer.ScrollableHeight;
                 var horizontalScrollPosition = ScrollViewer.HorizontalOffset/ScrollViewer.ScrollableWidth;
 
-                ScrollContent.LayoutTransform = new ScaleTransform(_scale, _scale);
+                ScrollContent.LayoutTransform = new ScaleTransform(_zoom, _zoom);
                 ScrollViewer.UpdateLayout();
 
                 ScrollViewer.ScrollToVerticalOffset(verticalScrollPosition*ScrollViewer.ScrollableHeight);
@@ -182,7 +194,7 @@ namespace ArcanumTextureSlicer.Gui
             }
             else
             {
-                ScrollContent.LayoutTransform = new ScaleTransform(_scale, _scale);
+                ScrollContent.LayoutTransform = new ScaleTransform(_zoom, _zoom);
             }
         }
 

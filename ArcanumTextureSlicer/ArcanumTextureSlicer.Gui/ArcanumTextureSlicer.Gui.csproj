@@ -66,6 +66,7 @@
     </Compile>
     <Compile Include="Commands\Commands.cs" />
     <Compile Include="Commands\MoveGridCommand.cs" />
+    <Compile Include="Commands\ZoomCommand.cs" />
     <Compile Include="Commands\ResetGridCommand.cs" />
     <Compile Include="Controls\BitmapViewer.cs" />
     <Compile Include="Controls\GridViewer.cs" />

@@ -29,6 +29,10 @@
         <CommandBinding Command="cmd:Commands.MoveGridRight10" Executed="MoveGrid_Executed"
                         CanExecute="MoveGrid_CanExecute" />
         <CommandBinding Command="cmd:Commands.ResetGrid" Executed="MoveGrid_Executed" CanExecute="MoveGrid_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ZoomX1" Executed="Zoom_Executed" CanExecute="Zoom_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ZoomX2" Executed="Zoom_Executed" CanExecute="Zoom_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ZoomX3" Executed="Zoom_Executed" CanExecute="Zoom_CanExecute" />
+        <CommandBinding Command="cmd:Commands.ZoomX4" Executed="Zoom_Executed" CanExecute="Zoom_CanExecute" />
     </Window.CommandBindings>
 
     <DockPanel>
@@ -36,6 +40,12 @@
             <MenuItem Header="File">
                 <MenuItem Header="Open..." Command="ApplicationCommands.Open" />
                 <MenuItem Header="Export..." />
+            </MenuItem>
+            <MenuItem Header="Zoom">
+                <MenuItem Header="Zoom x1" Command="cmd:Commands.ZoomX1" />
+                <MenuItem Header="Zoom x2" Command="cmd:Commands.ZoomX2" />
+                <MenuItem Header="Zoom x3" Command="cmd:Commands.ZoomX3" />
+                <MenuItem Header="Zoom x4" Command="cmd:Commands.ZoomX4" />
             </MenuItem>
             <MenuItem Header="Grid">
                 <MenuItem Header="Move Up 1px" Command="cmd:Commands.MoveGridUp1" />
@@ -56,9 +66,10 @@
                       MouseLeftButtonDown="ScrollViewer_MouseLeftButtonDown"
                       MouseMove="ScrollViewer_OnMouseMove"
                       MouseLeftButtonUp="ScrollViewer_OnMouseLeftButtonUp">
-            <Grid Name="ScrollContent" MouseWheel="ScrollContent_OnMouseWheel">
-                <controls:BitmapViewer x:Name="BitmapViewer" Stretch="None"/>
-                <controls:GridViewer x:Name="GridViewer" Stretch="None" MouseLeftButtonDown="GridViewer_MouseLeftButtonDown" />
+            <Grid Name="ScrollContent" MouseWheel="ScrollContent_MouseWheel">
+                <controls:BitmapViewer x:Name="BitmapViewer" Stretch="None" />
+                <controls:GridViewer x:Name="GridViewer" Stretch="None"
+                                     MouseLeftButtonDown="GridViewer_MouseLeftButtonDown" />
             </Grid>
         </ScrollViewer>
     </DockPanel>

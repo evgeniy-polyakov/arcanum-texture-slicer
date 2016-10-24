@@ -17,5 +17,10 @@ namespace ArcanumTextureSlicer.Gui.Commands
         public static readonly RoutedCommand MoveGridRight10 = new MoveGridCommand(10, 0);
 
         public static readonly RoutedCommand ResetGrid = new ResetGridCommand();
+
+        public static readonly RoutedCommand ZoomX1 = new ZoomCommand(1);
+        public static readonly RoutedCommand ZoomX2 = new ZoomCommand(2);
+        public static readonly RoutedCommand ZoomX3 = new ZoomCommand(3);
+        public static readonly RoutedCommand ZoomX4 = new ZoomCommand(4);
     }
 }
