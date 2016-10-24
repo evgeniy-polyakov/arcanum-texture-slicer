@@ -165,7 +165,22 @@ namespace ArcanumTextureSlicer.Gui
         {
             _scale = Math.Max(1, _scale);
             _scale = Math.Min(10, _scale);
-            ScrollContent.LayoutTransform = new ScaleTransform(_scale, _scale);
+
+            if (ScrollViewer.ScrollableHeight > 0 && ScrollViewer.ScrollableWidth > 0)
+            {
+                var verticalScrollPosition = ScrollViewer.VerticalOffset/ScrollViewer.ScrollableHeight;
+                var horizontalScrollPosition = ScrollViewer.HorizontalOffset/ScrollViewer.ScrollableWidth;
+
+                ScrollContent.LayoutTransform = new ScaleTransform(_scale, _scale);
+                ScrollViewer.UpdateLayout();
+
+                ScrollViewer.ScrollToVerticalOffset(verticalScrollPosition*ScrollViewer.ScrollableHeight);
+                ScrollViewer.ScrollToHorizontalOffset(horizontalScrollPosition*ScrollViewer.ScrollableWidth);
+            }
+            else
+            {
+                ScrollContent.LayoutTransform = new ScaleTransform(_scale, _scale);
+            }
         }
     }
 }
