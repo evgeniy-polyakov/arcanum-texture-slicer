@@ -163,7 +163,7 @@ namespace ArcanumTextureSlicer.Gui
 
         private void UpdateScale()
         {
-            _scale = Math.Max(0.1, _scale);
+            _scale = Math.Max(1, _scale);
             _scale = Math.Min(10, _scale);
             ScrollContent.LayoutTransform = new ScaleTransform(_scale, _scale);
         }

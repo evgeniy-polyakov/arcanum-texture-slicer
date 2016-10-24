@@ -49,12 +49,13 @@
                 <MenuItem Header="Reset" Command="cmd:Commands.ResetGrid" />
             </MenuItem>
         </Menu>
-        <ScrollViewer Name="ScrollViewer" Focusable="False"
+        <ScrollViewer Name="ScrollViewer"
+                      Focusable="False"
                       HorizontalScrollBarVisibility="Auto"
                       VerticalScrollBarVisibility="Auto">
             <Grid Name="ScrollContent" MouseWheel="ScrollContent_OnMouseWheel">
-                <controls:BitmapViewer x:Name="BitmapViewer" />
-                <controls:GridViewer x:Name="GridViewer" MouseLeftButtonDown="GridViewer_MouseLeftButtonDown" />
+                <controls:BitmapViewer x:Name="BitmapViewer" Stretch="None"/>
+                <controls:GridViewer x:Name="GridViewer" Stretch="None" MouseLeftButtonDown="GridViewer_MouseLeftButtonDown" />
             </Grid>
         </ScrollViewer>
     </DockPanel>
