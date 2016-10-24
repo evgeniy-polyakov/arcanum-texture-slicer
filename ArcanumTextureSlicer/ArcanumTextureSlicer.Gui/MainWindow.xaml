@@ -41,12 +41,6 @@
                 <MenuItem Header="Open..." Command="ApplicationCommands.Open" />
                 <MenuItem Header="Export..." />
             </MenuItem>
-            <MenuItem Header="Zoom">
-                <MenuItem Header="Zoom x1" Command="cmd:Commands.ZoomX1" />
-                <MenuItem Header="Zoom x2" Command="cmd:Commands.ZoomX2" />
-                <MenuItem Header="Zoom x3" Command="cmd:Commands.ZoomX3" />
-                <MenuItem Header="Zoom x4" Command="cmd:Commands.ZoomX4" />
-            </MenuItem>
             <MenuItem Header="Grid">
                 <MenuItem Header="Move Up 1px" Command="cmd:Commands.MoveGridUp1" />
                 <MenuItem Header="Move Up 10px" Command="cmd:Commands.MoveGridUp10" />
@@ -57,6 +51,12 @@
                 <MenuItem Header="Move Right 1px" Command="cmd:Commands.MoveGridRight1" />
                 <MenuItem Header="Move Right 10px" Command="cmd:Commands.MoveGridRight10" />
                 <MenuItem Header="Reset" Command="cmd:Commands.ResetGrid" />
+            </MenuItem>
+            <MenuItem Header="Zoom">
+                <MenuItem Header="Zoom x1" Command="cmd:Commands.ZoomX1" />
+                <MenuItem Header="Zoom x2" Command="cmd:Commands.ZoomX2" />
+                <MenuItem Header="Zoom x3" Command="cmd:Commands.ZoomX3" />
+                <MenuItem Header="Zoom x4" Command="cmd:Commands.ZoomX4" />
             </MenuItem>
         </Menu>
         <ScrollViewer Name="ScrollViewer"
