@@ -1,6 +1,6 @@
 # Arcanum Texture Slicer
 
-The tool is created for [Another Arcanum Project](http://another-arcanum.ru) in order to easily split large textures into rhomboid tiles. Textures are stored as 8bit bmp files where the first color in the palette is treated as trasparent. The resulting tiles have the same format and color table as the initial texture.
+The tool is created for [Another Arcanum Project](https://vk.com/another_arcanum) in order to easily split large textures into rhomboid tiles. Textures are stored as 8bit bmp files where the first color in the palette is treated as trasparent. The resulting tiles have the same format and color table as the initial texture.
 
 ## System Requirements
 - Windows 7 or later
